@@ -89,9 +89,11 @@
   as distinct from the interface speaking (.rsk-display) or the machine
   stating (.rsk-label).
 
-  Editorial only. In the luminous exposure --rsk-font-serif resolves to the
-  sans stack, so this degrades to interface type rather than rendering a
-  register that means nothing in a dashboard.
+  Requires data-voice="author" on an ancestor — not a particular exposure.
+  Voice and ground are independent: a dark-ground site that publishes essays
+  is luminous AND authored, and gating on exposure would silence the serif
+  exactly where a person is writing. Without the attribute this degrades to
+  interface type, so the serif cannot leak onto product surfaces.
 
   Display sizes only: Instrument Serif is high-contrast and loses its footing
   under about 24px. Below --rsk-text-2xl, use the sans.

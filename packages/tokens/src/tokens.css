@@ -62,10 +62,24 @@
 
      The test: if a machine could have written it, it is not serif.
 
-     SERIF IS EDITORIAL-ONLY. A dashboard has no authorship, so the face is
-     never used in the luminous exposure — see the guard below. It is also
-     display-only: Instrument Serif is high-contrast and falls apart under
-     about 24px, so the rule is aesthetic and practical at once.
+     SERIF IS VOICE-GATED, NOT EXPOSURE-GATED. An earlier version tied it to
+     the editorial exposure, which conflated two independent things:
+
+       data-exposure   which ground you are on      editorial | luminous
+       data-voice      who is speaking              author    | product
+
+     Those are orthogonal. A dark-ground site that publishes essays is
+     luminous exposure AND author voice, and gating the serif on exposure
+     would have silenced it there — which is precisely backwards, because
+     that is a person writing.
+
+     So authorship is opted into: --rsk-font-serif resolves to the sans
+     stack until an ancestor carries data-voice="author". Product surfaces
+     get interface type whatever ground they sit on; authored surfaces get
+     the serif on either. Default is product, so the serif cannot leak.
+
+     It is also display-only: Instrument Serif is high-contrast and falls
+     apart under about 24px, so the rule is aesthetic and practical at once.
 
      Faces are declared, not loaded. Packaging @font-face here would force a
      network origin on every consumer; load them in the app (next/font,
@@ -78,7 +92,10 @@
      x-height pays off — a size this system barely uses outside code blocks. */
   --rsk-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --rsk-font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  /* The face itself, and the gate. --rsk-font-serif resolves to the sans
+     stack by default; only data-voice="author" opens it. */
+  --rsk-serif-face: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --rsk-font-serif: var(--rsk-font-sans);
 
   --rsk-tracking-display: -0.022em;
   --rsk-tracking-label: 0.09em;
@@ -244,11 +261,6 @@
 [data-exposure="luminous"] {
   color-scheme: dark;
 
-  /* Authorship does not exist in the product voice. A component that reaches
-     for the serif here gets the interface face instead — the system correcting
-     itself rather than rendering a register that means nothing in a dashboard.
-     This is the guard that stops the serif leaking out of editorial. */
-  --rsk-font-serif: var(--rsk-font-sans);
 
   --rsk-ground: var(--rsk-n-01);
   --rsk-surface: var(--rsk-n-02);
@@ -313,6 +325,21 @@
 [data-band="intelligence"] { --rsk-mark: var(--rsk-mark-405); --rsk-tint: var(--rsk-text-405); }
 [data-band="warning"]      { --rsk-mark: var(--rsk-mark-620); --rsk-tint: var(--rsk-text-620); }
 [data-band="critical"]     { --rsk-mark: var(--rsk-mark-700); --rsk-tint: var(--rsk-text-700); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   VOICE — orthogonal to exposure.
+
+   Mark the subtree where a person is speaking:
+
+     <article data-voice="author">
+
+   That is the only thing that unlocks the serif, on either ground. Product
+   surfaces need no attribute; product is the default, so nothing leaks.
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-voice="author"] {
+  --rsk-font-serif: var(--rsk-serif-face);
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    RULES — translucent, and deliberately so.
