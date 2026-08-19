@@ -112,8 +112,7 @@ Two constraints worth knowing, because they cost the most to satisfy:
 
 ## Typography
 
-One sans, one mono. Inter at two optical sizes; JetBrains Mono for metadata
-and code. No serif at any size. Mono is the highest-risk element in the
+One sans, one mono. Inter at two optical sizes; IBM Plex Mono for metadata and code. No serif at any size. Mono is the highest-risk element in the
 system — keeping it strictly to metadata is what stops it becoming a costume.
 
 ## Ownership

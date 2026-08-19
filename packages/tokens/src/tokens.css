@@ -55,12 +55,37 @@
 
 :root {
   /* ── Type ──────────────────────────────────────────────────────────── */
+  /* ── Three registers, assigned by who is speaking ──────────────────────
+     MONO   metadata. Machine-stated: figures, timestamps, states, nm.
+     SANS   interface. The system speaking: labels, nav, controls, body.
+     SERIF  authorship. A person speaking: article titles, pull quotes.
+
+     The test: if a machine could have written it, it is not serif.
+
+     SERIF IS EDITORIAL-ONLY. A dashboard has no authorship, so the face is
+     never used in the luminous exposure — see the guard below. It is also
+     display-only: Instrument Serif is high-contrast and falls apart under
+     about 24px, so the rule is aesthetic and practical at once.
+
+     Faces are declared, not loaded. Packaging @font-face here would force a
+     network origin on every consumer; load them in the app (next/font,
+     Fontsource, or a <link>) and these stacks pick them up. */
   --rsk-font-sans: Inter, "Inter Variable", system-ui, -apple-system, sans-serif;
-  --rsk-font-mono: "JetBrains Mono", "JetBrains Mono Variable", ui-monospace,
-               SFMono-Regular, Menlo, monospace;
+
+  /* IBM Plex Mono over JetBrains Mono: this system uses mono almost entirely
+     at --rsk-text-2xs, uppercase and tracked, and Plex is the more humanist
+     face at that size. JetBrains is tuned for 14px code, where its tall
+     x-height pays off — a size this system barely uses outside code blocks. */
+  --rsk-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --rsk-font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
 
   --rsk-tracking-display: -0.022em;
   --rsk-tracking-label: 0.09em;
+  /* The serif sets tighter than the grotesque and needs no negative tracking
+     at display sizes; its own fit is already close. */
+  --rsk-tracking-serif: -0.005em;
+  --rsk-leading-serif: 1.08;
 
   --rsk-text-2xs: 0.6875rem; --rsk-text-xs: 0.75rem;   --rsk-text-sm: 0.8125rem;
   --rsk-text-base: 0.875rem; --rsk-text-lg: 1rem;      --rsk-text-xl: 1.25rem;
@@ -219,6 +244,12 @@
 [data-exposure="luminous"] {
   color-scheme: dark;
 
+  /* Authorship does not exist in the product voice. A component that reaches
+     for the serif here gets the interface face instead — the system correcting
+     itself rather than rendering a register that means nothing in a dashboard.
+     This is the guard that stops the serif leaking out of editorial. */
+  --rsk-font-serif: var(--rsk-font-sans);
+
   --rsk-ground: var(--rsk-n-01);
   --rsk-surface: var(--rsk-n-02);
   --rsk-surface-2: var(--rsk-n-03);
@@ -376,7 +407,27 @@
      nothing collides. It is also, finally, a plain rainbow scale in
      dispersion order — the chart really is a prism, legitimately this time.
 
-     Past six series, stop using colour: label the series directly. */
+     Past six series, stop using colour: label the series directly.
+
+     ── Labelled use is a different problem ─────────────────────────────
+     The 0.131 floor exists because a chart series carries its meaning in
+     colour alone — the legend sits elsewhere, so two close hues are a real
+     failure. When every instance is labelled *in place* (filter chips, tag
+     lists, category dots beside their name) colour is redundant
+     reinforcement and the floor does not apply.
+
+     Measured against a site doing exactly this well: its ten category dots
+     have a worst pair of dE 0.063, and 5 of 45 pairs fall below 0.131. They
+     work anyway, because the label disambiguates.
+
+     So the rule splits by role:
+
+       colour alone carries it   -> the six --chart-* hues, floor 0.131
+       always labelled in place  -> any of the eight categorical marks
+
+     Eight, not ten: 620nm and 700nm stay reserved for warning and critical
+     however well labelled they are, because an alarm hue used as a category
+     is a lie regardless of the text next to it. */
   --chart-1: var(--rsk-mark-590);   /* amber   */
   --chart-2: var(--rsk-mark-520);   /* green   */
   --chart-3: var(--rsk-mark-490);   /* cyan    */
@@ -394,6 +445,17 @@
   --chart-grid: color-mix(in oklab, var(--rsk-rule) 60%, transparent);
   --chart-axis: var(--rsk-rule);
   --chart-label: var(--rsk-text-faint);
+
+  /* Newer additions to shadcn's theme. We already held equivalents; without
+     the mapping a component reading --surface or --code got nothing. */
+  --surface: var(--rsk-surface);
+  --surface-foreground: var(--rsk-text);
+  --selection: color-mix(in oklab, var(--rsk-mark-590) 30%, transparent);
+  --selection-foreground: var(--rsk-text);
+  --code: var(--rsk-code-bg);
+  --code-foreground: var(--rsk-code-text);
+  --code-highlight: color-mix(in oklab, var(--rsk-mark-590) 12%, transparent);
+  --code-number: var(--rsk-code-number);
 
   --sidebar: var(--rsk-surface);
   --sidebar-foreground: var(--rsk-text);

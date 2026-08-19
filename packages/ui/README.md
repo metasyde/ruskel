@@ -27,9 +27,9 @@ tell without rewriting a single primitive.
 
 ## Classes
 
-`wl-btn` `wl-input` `wl-check` `wl-switch` `wl-chip` `wl-card` `wl-tabs`
-`wl-table` `wl-alert` `wl-dialog` `wl-tooltip` `wl-progress` `wl-meter`
-`wl-skeleton` `wl-status`
+`rsk-btn` `rsk-input` `rsk-check` `rsk-switch` `rsk-chip` `rsk-card` `rsk-tabs`
+`rsk-table` `rsk-alert` `rsk-dialog` `rsk-tooltip` `rsk-progress` `rsk-meter`
+`rsk-skeleton` `rsk-status`
 
 Paste them into the corresponding shadcn component's `cva` variants, or apply
 them directly. The token contract does most of the work on its own.
