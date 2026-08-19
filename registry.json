@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "ruskel",
+  "homepage": "https://github.com/metasyde/ruskel",
+  "items": [
+    {
+      "name": "ruskel-tokens",
+      "type": "registry:style",
+      "title": "Ruskel tokens",
+      "author": "Enric Trillo (Metasyde)",
+      "description": "The two-exposure token layer. Installs @ruskel/tokens and imports it, which also maps the system onto the shadcn variable contract.",
+      "dependencies": [
+        "@ruskel/tokens"
+      ],
+      "css": {
+        "@import \"@ruskel/tokens\"": {}
+      }
+    },
+    {
+      "name": "ruskel",
+      "type": "registry:style",
+      "title": "Ruskel",
+      "author": "Enric Trillo (Metasyde)",
+      "description": "The whole system: tokens plus the component layer. 4px radius, no shadows, tighter density, mono tabular numerals, neutral focus. @ruskel/ui imports the tokens itself.",
+      "dependencies": [
+        "@ruskel/ui"
+      ],
+      "css": {
+        "@import \"@ruskel/ui\"": {}
+      }
+    }
+  ]
+}
