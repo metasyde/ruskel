@@ -1,0 +1,25 @@
+name: verify
+
+# The palette is a constraint solve, not a set of picks. This is what stops
+# it drifting: solve.py re-derives every declared token and asserts the
+# contrast windows, the sRGB gamut ceilings, the AA floor for coloured type,
+# and the separation floor across the categorical series.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tokens:
+    name: token constraints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify the token constraints still hold
+        run: python3 tools/solve.py verify
+      - name: Report separation across the categorical series
+        run: python3 tools/solve.py separation
