@@ -23,3 +23,17 @@ jobs:
         run: python3 tools/solve.py verify
       - name: Report separation across the categorical series
         run: python3 tools/solve.py separation
+
+  registry:
+    name: registry manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # The repo is the registry: shadcn reads registry.json straight from
+      # GitHub, so a malformed manifest breaks installs with nothing to catch
+      # it. Building it here is the validation.
+      - name: Validate registry.json
+        run: npx --yes shadcn@latest build registry.json --output "$RUNNER_TEMP/r"

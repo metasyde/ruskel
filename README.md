@@ -5,9 +5,9 @@ either *read* or *operated* — and which should look like the same author
 made both.
 
 ```
+registry.json        the shadcn registry manifest — this file is the registry
 packages/tokens      the two-exposure token layer
 packages/ui          shadcn primitives, moulded
-packages/registry    shadcn custom registry manifest
 docs/                the specimen page and the written system
 tools/solve.py       the colour solver — the palette is its output
 ```
@@ -37,6 +37,16 @@ editorial. A component that needs a `[data-exposure]` override is a bug in
 the tokens.
 
 ## Use it
+
+Via the shadcn CLI — the repo *is* the registry, so there is nothing hosted
+and no build step:
+
+```bash
+npx shadcn@latest add metasyde/ruskel/ruskel          # tokens + components
+npx shadcn@latest add metasyde/ruskel/ruskel-tokens   # tokens only
+```
+
+Or plainly, if you are not using shadcn:
 
 ```bash
 npm install @ruskel/tokens @ruskel/ui
