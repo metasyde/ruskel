@@ -12,7 +12,8 @@
   ],
   "exports": {
     ".": "./src/tokens.css",
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"

@@ -12,7 +12,8 @@
   ],
   "exports": {
     ".": "./src/components.css",
-    "./components.css": "./src/components.css"
+    "./components.css": "./src/components.css",
+    "./package.json": "./package.json"
   },
   "publishConfig": {
     "access": "public"
