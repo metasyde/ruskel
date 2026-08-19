@@ -1,0 +1,15 @@
+{
+  "name": "@ruskel/tokens",
+  "version": "0.1.0",
+  "description": "Two-exposure design tokens. Ink on paper, paper on ink.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "files": ["src"],
+  "exports": {
+    ".": "./src/tokens.css",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "publishConfig": { "access": "public" },
+  "keywords": ["design-tokens", "css", "oklch", "shadcn", "design-system"]
+}

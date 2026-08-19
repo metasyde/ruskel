@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "ruskel",
+  "homepage": "https://github.com/phugadev/ruskel",
+  "items": [
+    {
+      "name": "ruskel-tokens",
+      "type": "registry:style",
+      "title": "Ruskel tokens",
+      "description": "The two-exposure token layer. Installs the base style and maps the system onto the shadcn contract.",
+      "files": [
+        { "path": "packages/tokens/src/tokens.css", "target": "styles/ruskel-tokens.css", "type": "registry:file" }
+      ],
+      "cssVars": {
+        "theme": {
+          "radius": "4px"
+        }
+      }
+    },
+    {
+      "name": "ruskel-components",
+      "type": "registry:style",
+      "title": "Ruskel component layer",
+      "description": "Moulds shadcn primitives to the house style: 4px radius, no shadows, tighter density, mono tabular numerals, neutral focus.",
+      "registryDependencies": ["ruskel-tokens"],
+      "files": [
+        { "path": "packages/ui/src/components.css", "target": "styles/ruskel-components.css", "type": "registry:file" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@ruskel/registry",
+  "version": "0.1.0",
+  "description": "shadcn custom registry manifest for Ruskel.",
+  "license": "MIT",
+  "type": "module",
+  "files": ["registry.json"],
+  "publishConfig": { "access": "public" }
+}

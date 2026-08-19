@@ -1,0 +1,412 @@
+/*
+  ══════════════════════════════════════════════════════════════════════════
+  RUSKEL — tokens.
+  One spectrum, two exposures. Component layer lives in @ruskel/ui and
+  depends on this file. Every value here is the output of tools/solve.py;
+  run `solve.py verify` after any change rather than eyeballing it.
+  ══════════════════════════════════════════════════════════════════════════
+
+  EXPOSURES
+    EDITORIAL   ink on paper.   The author voice. Site, writing, docs.
+    LUMINOUS    paper on ink.   The product voice. Apps, dashboards, demos.
+
+  ── The mark ring is not shared between exposures ────────────────────────
+  An earlier version used ONE vivid mark ring for both grounds, reasoning
+  that a brand colour shouldn't change between light and dark. Measured,
+  that was wrong: the same hue does not have the same impact on both grounds. The
+  shared 590nm amber sat at 10.15:1 on ink and 1.71:1 on paper — a strong
+  mark in one exposure and effectively invisible in the other.
+
+  So each exposure now solves its own mark ring: maximum chroma subject to
+  a contrast WINDOW against its own ground.
+
+      EDITORIAL marks   2.2–7.0:1 on paper   (denser pigment)
+      LUMINOUS  marks   4.5–9.0:1 on ink     (lighter, emissive)
+
+  A window, not a floor: pure chroma-maximisation produced a 16.7:1 neon
+  lime next to a 3.1:1 indigo — one member blinding, another dim. The
+  window keeps the set balanced while each hue still sits at its own
+  gamut ceiling.
+
+  Hue angles are identical across exposures, so a band is recognisably
+  the same colour in both — it is the intensity that re-solves, which is
+  exactly what changes when you move pigment onto a lit surface.
+
+  ── Two rings per exposure, because colour has two jobs ──────────────────
+    MARK   fills, bars, dots, glows, borders. Must be SEEN, not read.
+           WCAG *text* ratios do not apply; 3:1 non-text contrast does.
+    TEXT   coloured type on a ground. Must be READ → constrained to AA.
+  Never use one in the other's role.
+
+  ── Layers ──────────────────────────────────────────────────────────────
+  L0  NEUTRAL      the ink↔paper ramp. All chrome. No hue meaning.
+  L1  BANDS        the four named wavelengths. Subject-matter taxonomy.
+  L2  CATEGORICAL  six vivid hues in dispersion order: 590 520 490 470 405
+                   370. All at peak chroma, min pairwise ΔE 0.131. See the
+                   --chart-* block for why six and not eight.
+  L2b DISPLAY      550 lime and 440 indigo. Spectrum strips and gradients
+                   ONLY — they sit between named bands and collide with
+                   them (ΔE 0.078), so never a categorical series.
+  L3  FUNCTIONAL   620nm warning, 700nm critical. RESERVED.
+
+  Success is NOT a colour. Health is form: hollow = fine, ring = watch,
+  filled = critical.
+*/
+
+:root {
+  /* ── Type ──────────────────────────────────────────────────────────── */
+  --rsk-font-sans: Inter, "Inter Variable", system-ui, -apple-system, sans-serif;
+  --rsk-font-mono: "JetBrains Mono", "JetBrains Mono Variable", ui-monospace,
+               SFMono-Regular, Menlo, monospace;
+
+  --rsk-tracking-display: -0.022em;
+  --rsk-tracking-label: 0.09em;
+
+  --rsk-text-2xs: 0.6875rem; --rsk-text-xs: 0.75rem;   --rsk-text-sm: 0.8125rem;
+  --rsk-text-base: 0.875rem; --rsk-text-lg: 1rem;      --rsk-text-xl: 1.25rem;
+  --rsk-text-2xl: 1.5rem;    --rsk-text-3xl: 1.875rem; --rsk-text-4xl: 2.5rem;
+  --rsk-measure: 68ch;
+
+  /* ── Geometry ──────────────────────────────────────────────────────── */
+  --radius: 4px;                    /* shadcn ships 8px — see components.css */
+  --radius-sm: 2px;
+  --radius-lg: 6px;
+  --rsk-hairline: 1px;
+
+  /* ── Density ───────────────────────────────────────────────────────────
+     One step tighter than shadcn's defaults across the board. Instrument
+     panels are dense; marketing pages are not. */
+  --rsk-control-sm: 26px;
+  --rsk-control-md: 32px;
+  --rsk-control-lg: 40px;
+  --rsk-pad-x-sm: 8px;
+  --rsk-pad-x-md: 12px;
+  --rsk-pad-x-lg: 16px;
+
+  /* ── Motion ────────────────────────────────────────────────────────────
+     Colour only. No transforms, no scale-on-hover — a control that moves
+     under the cursor reads as a toy. */
+  --duration: 120ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ── Hue angles — identical in both exposures ──────────────────────── */
+  --rsk-h-700: 22;    --rsk-h-620: 42;    --rsk-h-590: 88;    --rsk-h-550: 110;
+  --rsk-h-520: 155.6; --rsk-h-490: 210;   --rsk-h-470: 252.3; --rsk-h-440: 275;
+  --rsk-h-405: 296.1; --rsk-h-370: 320;
+  --rsk-h-neutral: 85;                  /* warm; see the neutral note below */
+  /* ── The warm end, and why it moved twice ──────────────────────────
+     Three meanings share the warm arc — interface, warning, critical —
+     and it took two passes to space them properly.
+
+       first   interface 71.3  warning 55  critical 25   dE i/w 0.054
+       second  interface 78    warning 45  critical 25   dE i/w 0.106
+       shipped interface 88    warning 42  critical 22   dE i/w 0.143 / 0.155
+
+     The shipped figures clear 0.130, the bar the categorical series
+     holds. Getting there meant accepting warning/critical at dE 0.106 —
+     a deliberate trade, because those two ARE related (a severity ramp,
+     further separated by form: warning is a ring, critical is filled)
+     while interface is related to neither and must never be confusable
+     with an alarm.
+
+     Interface at 88 sits in the same hue family as the warm neutral (85).
+     That is a feature, not a collision: neutral chroma is 0.004-0.012, so
+     there is no visual conflict, and the greys read as very faintly
+     interface-tinted rather than as a foreign cast. */
+
+  /* ── L0 neutral ramp — shared, warm ───────────────────────────────────
+     Steps are ordinal (01-12), not 000-900. The nm space already occupies
+     three-digit numbers, and `--rsk-n-500` beside `--rsk-mark-590` reads as the
+     same kind of index when one is lightness and one is hue. Ordinal
+     removes the ambiguity, which matters more once these carry a shared
+     namespace prefix and someone other than you is reading them.
+
+     The hue is warm (85) in both exposures. The original neutrals had
+     cool darks (H≈270°) against
+     warm paper (H≈90°), so the two exposures' greys were not the same
+     family. Warm charcoal is cohesive with paper and walks away from the
+     blue-grey every other dev-tool dark mode uses. */
+  --rsk-n-01: oklch(0.145 0.004 var(--rsk-h-neutral));
+  --rsk-n-02: oklch(0.195 0.006 var(--rsk-h-neutral));
+  --rsk-n-03: oklch(0.235 0.008 var(--rsk-h-neutral));
+  --rsk-n-04: oklch(0.285 0.009 var(--rsk-h-neutral));
+  --rsk-n-05: oklch(0.360 0.010 var(--rsk-h-neutral));
+  --rsk-n-06: oklch(0.450 0.011 var(--rsk-h-neutral));
+  --rsk-n-07: oklch(0.545 0.012 var(--rsk-h-neutral));
+  --rsk-n-08: oklch(0.640 0.012 var(--rsk-h-neutral));
+  --rsk-n-09: oklch(0.730 0.012 var(--rsk-h-neutral));
+  --rsk-n-10: oklch(0.810 0.011 var(--rsk-h-neutral));
+  --rsk-n-11: oklch(0.880 0.010 var(--rsk-h-neutral));
+  --rsk-n-12: oklch(0.937 0.010 var(--rsk-h-neutral));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   EDITORIAL — ink on paper
+   Marks 2.2–7.0:1 on paper. Denser and darker than the luminous set:
+   on a light ground, saturation reads as depth of pigment.
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-exposure="editorial"] {
+  color-scheme: light;
+
+  --rsk-ground: var(--rsk-n-12);
+  --rsk-surface: oklch(0.960 0.008 var(--rsk-h-neutral));
+  --rsk-surface-2: oklch(0.982 0.005 var(--rsk-h-neutral));
+  --rsk-rule: oklch(0.855 0.010 var(--rsk-h-neutral));
+  --rsk-rule-strong: oklch(0.760 0.011 var(--rsk-h-neutral));
+  --rsk-text: var(--rsk-n-01);                                /* 16.3:1 */
+  --rsk-text-prose: var(--rsk-n-03);
+  --rsk-text-muted: oklch(0.470 0.011 var(--rsk-h-neutral));   /*  5.4:1 */
+  --rsk-text-faint: oklch(0.545 0.012 var(--rsk-h-neutral));   /*  4.1:1 non-essential */
+
+  /* MARK ring */
+  --rsk-mark-700: oklch(0.630 0.241 var(--rsk-h-700));  /* #F92040  3.29 critical */
+  --rsk-mark-620: oklch(0.690 0.198 var(--rsk-h-620));  /* #FB661C  2.49 warning  */
+  --rsk-mark-590: oklch(0.700 0.136 var(--rsk-h-590));  /* #C2981D  2.24 INTERFACE */
+  --rsk-mark-550: oklch(0.690 0.145 var(--rsk-h-550));  /* display  */
+  --rsk-mark-520: oklch(0.680 0.158 var(--rsk-h-520));  /* #21B46D  2.24 SYSTEMS  */
+  --rsk-mark-490: oklch(0.690 0.113 var(--rsk-h-490));  /* #21AEC2  2.21 cyan */
+  --rsk-mark-470: oklch(0.645 0.185 var(--rsk-h-470));  /* #1A8FF9  2.76 COMPUTE  */
+  --rsk-mark-440: oklch(0.510 0.263 var(--rsk-h-440));  /* #493BF8  5.35 display  */
+  --rsk-mark-405: oklch(0.600 0.236 var(--rsk-h-405));  /* #9251F9  3.67 INTELLIGENCE
+                                                 evened up from L 0.540: violet's
+                                                 chroma peak is low in sRGB, so it
+                                                 was reading a full step heavier
+                                                 than the rest of the paper set.
+                                                 Costs 15% chroma, closes 60% of
+                                                 the lightness gap. */
+  --rsk-mark-370: oklch(0.645 0.294 var(--rsk-h-370));  /* #D622F8  3.21 display  */
+
+  /* Deep stops — chart series 5–8 */
+  --rsk-deep-590: oklch(0.400 0.078 var(--rsk-h-590));
+  --rsk-deep-520: oklch(0.380 0.089 var(--rsk-h-520));
+  --rsk-deep-470: oklch(0.420 0.121 var(--rsk-h-470));
+  --rsk-deep-405: oklch(0.340 0.176 var(--rsk-h-405));
+
+  /* TEXT ring — AA on paper */
+  --rsk-text-700: oklch(0.540 0.196 var(--rsk-h-700));  /* 4.68 */
+  --rsk-text-620: oklch(0.530 0.144 var(--rsk-h-620));  /* 4.70 */
+  --rsk-text-590: oklch(0.520 0.096 var(--rsk-h-590));  /* 4.61 */
+  --rsk-text-550: oklch(0.515 0.101 var(--rsk-h-550));  /* 4.62 */
+  --rsk-text-520: oklch(0.505 0.111 var(--rsk-h-520));  /* 4.62 */
+  --rsk-text-490: oklch(0.510 0.078 var(--rsk-h-490));  /* 4.63 */
+  --rsk-text-470: oklch(0.520 0.141 var(--rsk-h-470));  /* 4.61 */
+  --rsk-text-440: oklch(0.535 0.235 var(--rsk-h-440));  /* 4.70 */
+  --rsk-text-405: oklch(0.550 0.256 var(--rsk-h-405));  /* 4.61 */
+  --rsk-text-370: oklch(0.550 0.238 var(--rsk-h-370));  /* 4.62 */
+
+  /* On a mark: paper, because editorial marks are dark. */
+  --rsk-on-mark: var(--rsk-n-12);
+
+  /* Shadow-shaped "off" values, so box-shadow lists stay valid in both. */
+  --rsk-glow-sm: 0 0 0 0 transparent;
+  --rsk-glow-md: 0 0 0 0 transparent;
+  --rsk-glow-lg: 0 0 0 0 transparent;
+  /* Editorial marks sit at 2.2:1 against paper — chosen for chroma, since
+     the 3:1 floor was costing 9-13% saturation on the warm hues and making
+     paper look dull. A 6px dot needs help at that level, so it gets a ring
+     rather than a darker hue. */
+  --rsk-dot-ring: inset 0 0 0 1px color-mix(in oklab, var(--rsk-n-01) 24%, transparent);
+  --rsk-wash: transparent;
+  --rsk-band-fill: 10%;
+  --rsk-band-edge: 40%;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LUMINOUS — paper on ink
+   Marks 4.5–9.0:1 on ink. Lighter and emissive: on a dark ground,
+   saturation reads as output.
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-exposure="luminous"] {
+  color-scheme: dark;
+
+  --rsk-ground: var(--rsk-n-01);
+  --rsk-surface: var(--rsk-n-02);
+  --rsk-surface-2: var(--rsk-n-03);
+  --rsk-rule: var(--rsk-n-04);
+  --rsk-rule-strong: var(--rsk-n-05);
+  --rsk-text: var(--rsk-n-12);          /* 16.3:1 */
+  --rsk-text-prose: var(--rsk-n-11);
+  --rsk-text-muted: var(--rsk-n-08);    /*  5.8:1 */
+  --rsk-text-faint: var(--rsk-n-07);    /*  4.0:1 non-essential */
+
+  /* MARK ring */
+  --rsk-mark-700: oklch(0.630 0.241 var(--rsk-h-700));  /* #F92040  5.00 critical */
+  --rsk-mark-620: oklch(0.690 0.198 var(--rsk-h-620));  /* #FB661C  6.61 warning  */
+  --rsk-mark-590: oklch(0.750 0.146 var(--rsk-h-590));  /* #D4A721  8.81 INTERFACE */
+  --rsk-mark-550: oklch(0.745 0.155 var(--rsk-h-550));  /* #B3B421  8.92 display  */
+  --rsk-mark-520: oklch(0.730 0.169 var(--rsk-h-520));  /* #25C678  8.88 SYSTEMS  */
+  --rsk-mark-490: oklch(0.740 0.122 var(--rsk-h-490));  /* #25BFD5  8.94 cyan */
+  --rsk-mark-470: oklch(0.645 0.185 var(--rsk-h-470));  /* #1A8FF9  5.98 COMPUTE  */
+  --rsk-mark-440: oklch(0.590 0.214 var(--rsk-h-440));  /* #5E67F9  4.51 display  */
+  --rsk-mark-405: oklch(0.605 0.232 var(--rsk-h-405));  /* #9354F9  4.60 INTELLIGENCE */
+  --rsk-mark-370: oklch(0.645 0.294 var(--rsk-h-370));  /* #D622F8  5.13 display  */
+
+  /* Deep stops — chart series 5–8 */
+  --rsk-deep-590: oklch(0.480 0.093 var(--rsk-h-590));
+  --rsk-deep-520: oklch(0.540 0.125 var(--rsk-h-520));
+  --rsk-deep-470: oklch(0.460 0.132 var(--rsk-h-470));
+  --rsk-deep-405: oklch(0.760 0.133 var(--rsk-h-405));
+
+  /* TEXT ring — comfortable on ink */
+  --rsk-text-700: oklch(0.690 0.180 var(--rsk-h-700));  /* 6.57 */
+  --rsk-text-620: oklch(0.685 0.186 var(--rsk-h-620));  /* 6.50 */
+  --rsk-text-590: oklch(0.670 0.123 var(--rsk-h-590));  /* 6.58 */
+  --rsk-text-550: oklch(0.665 0.131 var(--rsk-h-550));  /* 6.60 */
+  --rsk-text-520: oklch(0.650 0.143 var(--rsk-h-520));  /* 6.51 */
+  --rsk-text-490: oklch(0.655 0.100 var(--rsk-h-490));  /* 6.52 */
+  --rsk-text-470: oklch(0.670 0.162 var(--rsk-h-470));  /* 6.62 */
+  --rsk-text-440: oklch(0.675 0.155 var(--rsk-h-440));  /* 6.53 */
+  --rsk-text-405: oklch(0.685 0.170 var(--rsk-h-405));  /* 6.60 */
+  --rsk-text-370: oklch(0.700 0.233 var(--rsk-h-370));  /* 6.65 */
+
+  /* On a mark: ink, because luminous marks are light. */
+  --rsk-on-mark: var(--rsk-n-01);
+
+  --rsk-dot-ring: 0 0 0 0 transparent;   /* emission already separates it */
+  --rsk-glow-sm: 0 0 10px -1px color-mix(in oklab, var(--rsk-mark, transparent) 55%, transparent);
+  --rsk-glow-md: 0 0 22px -2px color-mix(in oklab, var(--rsk-mark, transparent) 65%, transparent);
+  --rsk-glow-lg: 0 0 48px -6px color-mix(in oklab, var(--rsk-mark, transparent) 75%, transparent);
+  --rsk-wash: radial-gradient(120% 100% at 50% 0%,
+          color-mix(in oklab, var(--rsk-mark, transparent) 18%, transparent) 0%,
+          transparent 70%);
+  --rsk-band-fill: 14%;
+  --rsk-band-edge: 45%;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   L1 — the four named bands. A band is a named position on the spectrum,
+   never its own colour. Each resolves to a mark and a text value.
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-band="interface"]    { --rsk-mark: var(--rsk-mark-590); --rsk-tint: var(--rsk-text-590); }
+[data-band="systems"]      { --rsk-mark: var(--rsk-mark-520); --rsk-tint: var(--rsk-text-520); }
+[data-band="compute"]      { --rsk-mark: var(--rsk-mark-470); --rsk-tint: var(--rsk-text-470); }
+[data-band="intelligence"] { --rsk-mark: var(--rsk-mark-405); --rsk-tint: var(--rsk-text-405); }
+[data-band="warning"]      { --rsk-mark: var(--rsk-mark-620); --rsk-tint: var(--rsk-text-620); }
+[data-band="critical"]     { --rsk-mark: var(--rsk-mark-700); --rsk-tint: var(--rsk-text-700); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   SHADCN CONTRACT
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-exposure] {
+  --background: var(--rsk-ground);
+  --foreground: var(--rsk-text);
+  --card: var(--rsk-surface);
+  --card-foreground: var(--rsk-text);
+  --popover: var(--rsk-surface-2);
+  --popover-foreground: var(--rsk-text);
+
+  /* Primary is INK, not a band. A button is chrome — it is not *about*
+     interface, it is a control, and rule 1 says chrome carries no band.
+     590nm amber also sits 16° from the 620nm warning hue, so an amber
+     primary quietly reads as caution. */
+  --primary: var(--rsk-text);
+  --primary-foreground: var(--rsk-ground);
+
+  --secondary: var(--rsk-surface-2);
+  --secondary-foreground: var(--rsk-text);
+  --muted: var(--rsk-surface-2);
+  --muted-foreground: var(--rsk-text-muted);
+  --accent: var(--rsk-surface-2);
+  --accent-foreground: var(--rsk-text);
+
+  --destructive: var(--rsk-mark-700);
+  --destructive-foreground: var(--rsk-on-mark);
+
+  --border: var(--rsk-rule);
+  --input: var(--rsk-rule);
+  /* Focus is INK, not amber.
+     This was the system's one live exception to rule 1 — a band colour
+     touching chrome — and it was rationalised rather than justified. An
+     amber ring also sat next to amber interface chips, so "focused" and
+     "classified as interface" competed for the same signal.
+     Neutral is both more correct and more legible: --rsk-text is 16.3:1 on
+     its own ground in either exposure, where the amber managed 8.8.
+     The 2px offset gap shows --rsk-ground, so the ring reads as a detached
+     halo rather than a thicker border — which is what made a coloured
+     ring feel necessary in the first place. */
+  --ring: var(--rsk-text);
+  --ring-offset: var(--rsk-ground);
+
+  /* ── Six vivid hues, in dispersion order ───────────────────────────
+     Settled by measurement after three attempts. Minimum pairwise OKLab
+     ΔE across the whole set, worst case of the two exposures:
+
+         8 hues, evenly spread      0.079 / 0.085   collide badly
+         4 hues x 2 lightnesses     0.107 / 0.152   slots 5-8 visibly dull
+         6 hues, all at peak        0.131 / 0.131   <- this
+
+     Eight hues cannot separate: the categorical arc is only ~300 degrees
+     once 15-58 is reserved for warning and critical, and cyan/blue and
+     indigo/violet collapse into each other no matter how they are built.
+     Four-hues-times-two-depths separated better on ink but bought it with
+     four muddy deep stops, which fought the whole point of the vivid ring.
+
+     Six is the number where every stop sits at its own gamut ceiling AND
+     nothing collides. It is also, finally, a plain rainbow scale in
+     dispersion order — the chart really is a prism, legitimately this time.
+
+     Past six series, stop using colour: label the series directly. */
+  --chart-1: var(--rsk-mark-590);   /* amber   */
+  --chart-2: var(--rsk-mark-520);   /* green   */
+  --chart-3: var(--rsk-mark-490);   /* cyan    */
+  --chart-4: var(--rsk-mark-470);   /* blue    */
+  --chart-5: var(--rsk-mark-405);   /* violet  */
+  --chart-6: var(--rsk-mark-370);   /* magenta */
+
+  /* Overflow only, and a deliberate step down in vividness. Reach for
+     these when a chart genuinely needs 7-8 series and direct labelling
+     is not possible — never as a first choice. */
+  --chart-7: var(--rsk-deep-470);  --chart-8: var(--rsk-deep-405);
+
+  /* Chart furniture. Gridlines sit below the hairline weight so they never
+     compete with the series. */
+  --chart-grid: color-mix(in oklab, var(--rsk-rule) 60%, transparent);
+  --chart-axis: var(--rsk-rule);
+  --chart-label: var(--rsk-text-faint);
+
+  --sidebar: var(--rsk-surface);
+  --sidebar-foreground: var(--rsk-text);
+  --sidebar-primary: var(--rsk-text);
+  --sidebar-primary-foreground: var(--rsk-ground);
+  --sidebar-accent: var(--rsk-surface-2);
+  --sidebar-accent-foreground: var(--rsk-text);
+  --sidebar-border: var(--rsk-rule);
+  --sidebar-ring: var(--rsk-text);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ODDS AND ENDS a registry needs and a token file usually forgets
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-exposure] ::selection { background: color-mix(in oklab, var(--rsk-mark-590) 30%, transparent); color: var(--rsk-text); }
+
+[data-exposure] {
+  /* Syntax — code blocks are a first-class surface here, not an afterthought.
+     Mapped onto the ring so highlighting is the same system as everything
+     else: keywords take intelligence, strings systems, numbers interface. */
+  --rsk-code-bg: var(--rsk-surface);
+  --rsk-code-text: var(--rsk-text-prose);
+  --rsk-code-comment: var(--rsk-text-faint);
+  --rsk-code-keyword: var(--rsk-text-405);
+  --rsk-code-string: var(--rsk-text-520);
+  --rsk-code-number: var(--rsk-text-590);
+  --rsk-code-function: var(--rsk-text-470);
+  --rsk-code-punctuation: var(--rsk-text-muted);
+  --rsk-code-added: var(--rsk-text-520);
+  --rsk-code-removed: var(--rsk-text-700);
+
+  /* Scrollbars, so a dense panel does not punch a hole in the exposure. */
+  scrollbar-color: var(--rsk-rule-strong) transparent;
+  scrollbar-width: thin;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,365 @@
+/*
+  ══════════════════════════════════════════════════════════════════════════
+  COMPONENT LAYER — moulding shadcn into the house style.  v5
+  Depends on wavelength.css for every value. Contains no raw colours.
+  ══════════════════════════════════════════════════════════════════════════
+
+  shadcn is copy-in source, so this is not a theme file you fight — these
+  are the classes to paste into the components' own `cva` variants, or to
+  apply wholesale via the token contract.
+
+  ── The seven decisions that de-shadcn shadcn ────────────────────────────
+  Applied together, these remove essentially all of the "default shadcn
+  app" tell without rewriting a single primitive:
+
+  1  RADIUS 4px, not 8px. The single largest visual tell.
+  2  NO SHADOWS. Depth is a 1px rule in editorial, emission in luminous.
+     shadcn leans on shadow-sm/md for cards, popovers, dropdowns; every
+     one becomes a hairline.
+  3  DENSITY one step tighter. Controls are 26/32/40px, not 32/36/44.
+     Instrument panels are dense.
+  4  MONO FOR ALL DATA. Numerals, timestamps, IDs, states, units — mono
+     with tabular-nums so columns align. This is the single strongest
+     "engineered" signal in the whole system and costs nothing.
+  5  FOCUS IS INK, 2px, offset 2px. A hard instrument indicator, not a
+     soft glow — and neutral, so no band colour touches chrome anywhere.
+     The offset gap showing --rsk-ground is what makes a neutral ring read as
+     a halo rather than a thicker border.
+  6  MOTION IS COLOUR ONLY, 120ms. No scale, no translate, no shadow
+     bloom. A control that moves under the cursor reads as a toy.
+  7  UPPERCASE MONO LABELS with 0.09em tracking for every section header,
+     table header, and field label. Never for body copy.
+
+  ── The one sanctioned exception to "no pills" ───────────────────────────
+  A Switch is a pill. It has to be — the affordance is the travel of a
+  knob along a track, and a square switch reads as two checkboxes. It is
+  the only fully-rounded element in the system besides status dots.
+*/
+
+/* ══════════════════════════════════════════════════════════════════════
+   FOUNDATIONS
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-exposure] {
+  font-family: var(--rsk-font-sans);
+  font-optical-sizing: auto;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: var(--rsk-text-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Kill every shadcn shadow utility inside the system. */
+[data-exposure] :is(.shadow,.shadow-sm,.shadow-md,.shadow-lg,.shadow-xl,.shadow-2xl) {
+  box-shadow: none;
+}
+
+/* Focus: a detached neutral halo. The offset gap shows --rsk-ground, which is
+   what separates the ring from the control's own 1px border — without it a
+   neutral ring just reads as a thicker border, and that is why earlier
+   versions reached for a colour here. */
+[data-exposure] :focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Data is mono and tabular. Apply to any numeric cell, metric, or ID. */
+.wl-num {
+  font-family: var(--rsk-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.wl-label {
+  font-family: var(--rsk-font-mono);
+  font-size: var(--rsk-text-2xs);
+  letter-spacing: var(--rsk-tracking-label);
+  text-transform: uppercase;
+  color: var(--rsk-text-faint);
+  line-height: 1.4;
+}
+
+.wl-display {
+  letter-spacing: var(--rsk-tracking-display);
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BUTTON — replaces shadcn's buttonVariants
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--rsk-control-md);
+  padding: 0 var(--rsk-pad-x-md);
+  border-radius: var(--radius);
+  border: var(--rsk-hairline) solid transparent;
+  font-family: var(--rsk-font-sans);
+  font-size: var(--rsk-text-sm);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              color var(--duration) var(--ease);
+}
+.wl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Primary — ink on paper, paper on ink. A block of type, not a colour event. */
+.wl-btn--primary { background: var(--primary); color: var(--primary-foreground); }
+.wl-btn--primary:hover:not(:disabled) { background: color-mix(in oklab, var(--primary) 86%, var(--rsk-ground)); }
+.wl-btn--primary:active:not(:disabled) { background: color-mix(in oklab, var(--primary) 76%, var(--rsk-ground)); }
+
+/* Secondary — filled surface with a hairline. */
+.wl-btn--secondary {
+  background: var(--rsk-surface-2); color: var(--rsk-text); border-color: var(--rsk-rule);
+}
+.wl-btn--secondary:hover:not(:disabled) { border-color: var(--rsk-rule-strong); background: var(--rsk-surface); }
+
+/* Outline — hairline only, no fill. */
+.wl-btn--outline { background: transparent; color: var(--rsk-text); border-color: var(--rsk-rule); }
+.wl-btn--outline:hover:not(:disabled) { border-color: var(--rsk-rule-strong); background: var(--rsk-surface); }
+
+/* Ghost — text until touched. */
+.wl-btn--ghost { background: transparent; color: var(--rsk-text-muted); }
+.wl-btn--ghost:hover:not(:disabled) { background: var(--rsk-surface); color: var(--rsk-text); }
+
+/* Destructive — the reserved 700nm mark. */
+.wl-btn--destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.wl-btn--destructive:hover:not(:disabled) { background: color-mix(in oklab, var(--destructive) 86%, var(--rsk-ground)); }
+
+/* Link */
+.wl-btn--link {
+  background: transparent; color: var(--rsk-text-590); height: auto; padding: 0;
+  text-decoration: underline; text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--rsk-text-590) 40%, transparent);
+}
+.wl-btn--link:hover { text-decoration-color: var(--rsk-text-590); }
+
+.wl-btn--sm { height: var(--rsk-control-sm); padding: 0 var(--rsk-pad-x-sm); font-size: var(--rsk-text-xs); }
+.wl-btn--lg { height: var(--rsk-control-lg); padding: 0 var(--rsk-pad-x-lg); font-size: var(--rsk-text-base); }
+.wl-btn--icon { width: var(--rsk-control-md); padding: 0; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   INPUT · TEXTAREA · SELECT
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-input {
+  width: 100%;
+  height: var(--rsk-control-md);
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: var(--rsk-hairline) solid var(--input);
+  background: var(--rsk-ground);
+  color: var(--rsk-text);
+  font-family: var(--rsk-font-sans);
+  font-size: var(--rsk-text-sm);
+  transition: border-color var(--duration) var(--ease);
+}
+.wl-input::placeholder { color: var(--rsk-text-faint); }
+.wl-input:hover:not(:disabled) { border-color: var(--rsk-rule-strong); }
+.wl-input:disabled { opacity: 0.5; cursor: not-allowed; }
+.wl-input[aria-invalid="true"] { border-color: var(--rsk-mark-700); }
+textarea.wl-input { height: auto; padding: 8px 10px; min-height: 72px; resize: vertical; line-height: 1.5; }
+
+/* Search and any field holding data uses mono. */
+.wl-input--mono { font-family: var(--rsk-font-mono); font-size: var(--rsk-text-xs); }
+
+.wl-field { display: flex; flex-direction: column; gap: 5px; }
+.wl-field .wl-hint { font-size: var(--rsk-text-xs); color: var(--rsk-text-muted); }
+.wl-field .wl-error { font-size: var(--rsk-text-xs); color: var(--rsk-text-700); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   CHECKBOX · RADIO · SWITCH
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-check {
+  appearance: none; margin: 0;
+  width: 15px; height: 15px;
+  border: var(--rsk-hairline) solid var(--rsk-rule-strong);
+  border-radius: var(--radius-sm);       /* near-square, per house geometry */
+  background: var(--rsk-ground);
+  display: inline-grid; place-content: center;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+.wl-check:checked { background: var(--primary); border-color: var(--primary); }
+.wl-check:checked::after {
+  content: ""; width: 8px; height: 4px;
+  border-left: 1.75px solid var(--primary-foreground);
+  border-bottom: 1.75px solid var(--primary-foreground);
+  transform: rotate(-45deg) translate(0.5px, -1px);
+}
+.wl-check--radio { border-radius: 50%; }
+.wl-check--radio:checked::after {
+  width: 6px; height: 6px; border: 0; border-radius: 50%; transform: none;
+  background: var(--primary-foreground);
+}
+
+/* The one sanctioned pill. */
+.wl-switch {
+  appearance: none; margin: 0;
+  width: 32px; height: 18px;
+  border-radius: 999px;
+  background: var(--rsk-surface-2);
+  border: var(--rsk-hairline) solid var(--rsk-rule-strong);
+  position: relative; cursor: pointer;
+  transition: background-color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+.wl-switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--rsk-text-muted);
+  transition: transform var(--duration) var(--ease), background-color var(--duration) var(--ease);
+}
+.wl-switch:checked { background: var(--primary); border-color: var(--primary); }
+.wl-switch:checked::after { transform: translateX(14px); background: var(--primary-foreground); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   BADGE — becomes the band chip
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 20px; padding: 0 7px;
+  border-radius: var(--radius-sm);
+  border: var(--rsk-hairline) solid var(--rsk-rule);
+  background: var(--rsk-surface);
+  color: var(--rsk-text);
+  font-family: var(--rsk-font-mono);
+  font-size: var(--rsk-text-2xs);
+  letter-spacing: var(--rsk-tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* The vivid mark carries the hue as a dot; the text stays full contrast.
+   Tinted-background-plus-tinted-text cancels itself out and reads as mud. */
+.wl-chip::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--rsk-mark); box-shadow: var(--rsk-glow-sm), var(--rsk-dot-ring); flex: none;
+}
+.wl-chip--solid {
+  background: var(--rsk-mark); color: var(--rsk-on-mark);
+  border-color: transparent; box-shadow: var(--rsk-glow-sm); font-weight: 500;
+}
+.wl-chip--solid::before { display: none; }
+.wl-chip--bare::before { display: none; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   CARD · SEPARATOR
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-card {
+  border: var(--rsk-hairline) solid var(--rsk-rule);
+  border-radius: var(--radius);
+  background: var(--rsk-surface);
+  box-shadow: none;
+}
+.wl-card__head { padding: 12px 14px; border-bottom: var(--rsk-hairline) solid var(--rsk-rule); }
+.wl-card__body { padding: 14px; }
+.wl-card__foot { padding: 12px 14px; border-top: var(--rsk-hairline) solid var(--rsk-rule); }
+
+.wl-sep { border: 0; border-top: var(--rsk-hairline) solid var(--rsk-rule); margin: 0; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   TABS — underline, never a pill segment
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-tabs { display: flex; gap: 2px; border-bottom: var(--rsk-hairline) solid var(--rsk-rule); }
+.wl-tab {
+  appearance: none; background: transparent; border: 0;
+  padding: 7px 12px;
+  font-family: var(--rsk-font-mono); font-size: var(--rsk-text-2xs);
+  letter-spacing: var(--rsk-tracking-label); text-transform: uppercase;
+  color: var(--rsk-text-faint); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+.wl-tab:hover { color: var(--rsk-text); }
+.wl-tab[aria-selected="true"] { color: var(--rsk-text); border-bottom-color: var(--rsk-mark-590); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   TABLE
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-table { width: 100%; border-collapse: collapse; font-size: var(--rsk-text-sm); }
+.wl-table th {
+  text-align: left; padding: 8px 12px;
+  border-bottom: var(--rsk-hairline) solid var(--rsk-rule);
+  font-family: var(--rsk-font-mono); font-size: var(--rsk-text-2xs); font-weight: 400;
+  letter-spacing: var(--rsk-tracking-label); text-transform: uppercase;
+  color: var(--rsk-text-faint); white-space: nowrap;
+}
+.wl-table td { padding: 8px 12px; border-bottom: var(--rsk-hairline) solid var(--rsk-rule); }
+.wl-table tr:last-child td { border-bottom: 0; }
+.wl-table tbody tr:hover { background: var(--rsk-surface); }
+.wl-table .num { font-family: var(--rsk-font-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--rsk-text-muted); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ALERT — a rail, not a tinted box
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-alert {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px;
+  padding: 11px 13px;
+  border: var(--rsk-hairline) solid var(--rsk-rule);
+  border-left: 2px solid var(--rsk-mark, var(--rsk-rule-strong));
+  border-radius: var(--radius);
+  background: var(--rsk-surface);
+}
+.wl-alert__title { font-size: var(--rsk-text-sm); font-weight: 500; margin: 0; }
+.wl-alert__body { font-size: var(--rsk-text-sm); color: var(--rsk-text-muted); margin: 3px 0 0; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   DIALOG · POPOVER · TOOLTIP
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-dialog {
+  border: var(--rsk-hairline) solid var(--rsk-rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--rsk-surface-2);
+  box-shadow: none;
+}
+.wl-overlay { background: color-mix(in oklab, var(--rsk-n-01) 62%, transparent); }
+.wl-tooltip {
+  background: var(--rsk-text); color: var(--rsk-ground);
+  padding: 4px 7px; border-radius: var(--radius-sm);
+  font-family: var(--rsk-font-mono); font-size: var(--rsk-text-2xs);
+  letter-spacing: 0.04em;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PROGRESS · METER · SKELETON
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-progress {
+  height: 4px; border-radius: 1px; background: var(--rsk-surface-2); overflow: hidden;
+}
+.wl-progress__bar {
+  height: 100%; background: var(--rsk-mark, var(--primary)); box-shadow: var(--rsk-glow-sm);
+}
+/* Segmented meter — the instrument-panel read, per the reference boards. */
+.wl-meter { display: flex; gap: 2px; height: 14px; }
+.wl-meter i { flex: 1; border-radius: 1px; background: var(--rsk-surface-2); }
+.wl-meter i[data-on] { background: var(--rsk-mark); box-shadow: var(--rsk-glow-sm); }
+
+.wl-skeleton {
+  background: var(--rsk-surface-2); border-radius: var(--radius-sm);
+  animation: wl-pulse 1.6s var(--ease) infinite;
+}
+@keyframes wl-pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.55 } }
+
+/* ══════════════════════════════════════════════════════════════════════
+   STATUS — one alarm hue plus form. Never a band.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wl-status { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
+.wl-status[data-state="ok"]       { background: var(--rsk-text-faint); }
+.wl-status[data-state="watch"]    { background: transparent; box-shadow: inset 0 0 0 1.5px var(--rsk-text); }
+.wl-status[data-state="critical"] { --rsk-mark: var(--rsk-mark-700); background: var(--rsk-mark-700); box-shadow: var(--rsk-glow-sm), var(--rsk-dot-ring); }

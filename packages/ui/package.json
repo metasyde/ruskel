@@ -1,0 +1,16 @@
+{
+  "name": "@ruskel/ui",
+  "version": "0.1.0",
+  "description": "The component layer: shadcn primitives moulded to the two-exposure system.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "files": ["src"],
+  "exports": {
+    ".": "./src/components.css",
+    "./components.css": "./src/components.css"
+  },
+  "peerDependencies": { "@ruskel/tokens": "^0.1.0" },
+  "publishConfig": { "access": "public" },
+  "keywords": ["shadcn", "ui", "css", "design-system"]
+}

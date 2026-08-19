@@ -1,0 +1,14 @@
+{
+  "name": "ruskel",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A two-exposure design system: one spectrum, rendered as pigment or as light.",
+  "license": "MIT",
+  "author": "Enric Trillo",
+  "type": "module",
+  "scripts": {
+    "docs": "npx serve docs",
+    "solve": "python3 tools/solve.py",
+    "check": "python3 tools/solve.py verify"
+  }
+}

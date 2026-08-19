@@ -1,0 +1,1101 @@
+<title>Two-Exposure System</title>
+
+<style>
+/* PAGE CHROME — a third neutral, neither exposure, so both plates read as specimens. */
+:root{--bench:oklch(0.895 0.008 85);--bench-2:oklch(0.935 0.006 85);--bench-ink:oklch(0.175 0.006 85);
+--bench-muted:oklch(0.470 0.011 85);--bench-rule:oklch(0.815 0.010 85);
+--f-ui:system-ui,-apple-system,"Segoe UI",sans-serif;
+--f-mono:ui-monospace,SFMono-Regular,Menlo,"JetBrains Mono",monospace;--measure:66ch;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bench:oklch(0.185 0.006 85);--bench-2:oklch(0.235 0.008 85);--bench-ink:oklch(0.925 0.008 85);--bench-muted:oklch(0.645 0.012 85);--bench-rule:oklch(0.300 0.009 85);}}
+:root[data-theme="dark"]{--bench:oklch(0.185 0.006 85);--bench-2:oklch(0.235 0.008 85);--bench-ink:oklch(0.925 0.008 85);--bench-muted:oklch(0.645 0.012 85);--bench-rule:oklch(0.300 0.009 85);}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bench);color:var(--bench-ink);font-family:var(--f-ui);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.lab{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--bench-muted);margin:0}
+h1,h2,h3{font-weight:500;letter-spacing:-.022em;margin:0;line-height:1.15}
+hr.b{border:0;border-top:1px solid var(--bench-rule);margin:0}
+code{font-family:var(--f-mono);font-size:.85em;background:var(--bench-2);padding:1px 4px;border-radius:2px}
+.mast{padding:72px 0 44px}
+.mast h1{font-size:clamp(2rem,5.2vw,2.76rem);margin-top:10px}
+.mast .thesis{max-width:var(--measure);margin:24px 0 0;font-size:1.06rem}
+.mast .thesis+.thesis{margin-top:14px;color:var(--bench-muted)}
+.swap{display:flex;flex-wrap:wrap;gap:2px;margin-top:40px;max-width:560px}
+.swap div{flex:1 1 160px;padding:18px 16px;border-radius:2px;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase}
+.swap .a{background:#EDEAE3;color:#0B0A08}.swap .b{background:#0B0A08;color:#EDEAE3}
+.swap span{display:block;opacity:.55;margin-top:4px}
+section{padding:56px 0}
+.shead{margin-bottom:8px}.shead h2{font-size:1.35rem;margin-top:6px}
+.sintro{max-width:var(--measure);color:var(--bench-muted);margin:12px 0 32px}
+.sintro strong{color:var(--bench-ink);font-weight:500}
+.note{max-width:var(--measure);margin-top:20px;font-size:.87rem;color:var(--bench-muted)}
+.note strong{color:var(--bench-ink);font-weight:500}
+.layers{display:grid;gap:1px;background:var(--bench-rule);border:1px solid var(--bench-rule);border-radius:3px}
+.layer{background:var(--bench);padding:16px 18px;display:grid;grid-template-columns:104px 1fr;gap:18px;align-items:start}
+@media (max-width:640px){.layer{grid-template-columns:1fr;gap:6px}}
+.layer .tag{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--bench-muted);padding-top:3px}
+.layer b{font-weight:500}.layer p{margin:4px 0 0;font-size:.87rem;color:var(--bench-muted)}
+.tscroll{overflow-x:auto}
+table.map{border-collapse:collapse;width:100%;min-width:560px;font-size:.85rem}
+table.map th,table.map td{text-align:left;padding:9px 14px 9px 0;border-bottom:1px solid var(--bench-rule);vertical-align:top}
+table.map th{font-family:var(--f-mono);font-size:.62rem;font-weight:400;letter-spacing:.09em;text-transform:uppercase;color:var(--bench-muted)}
+table.map td.n{font-family:var(--f-mono);font-size:.75rem;white-space:nowrap}
+table.map td.d{color:var(--bench-muted);font-size:.82rem}
+.plates{display:grid;grid-template-columns:1fr;gap:28px}
+@media (min-width:1000px){.plates{grid-template-columns:1fr 1fr}}
+.plate{min-width:0;margin:0}
+.plate>figcaption{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bench-rule)}
+.plate>figcaption b{font-weight:500;font-size:.95rem}
+.plate>figcaption span{color:var(--bench-muted);font-size:.83rem}
+/* ring comparison */
+.ringplate{border:1px solid var(--bench-rule);border-radius:4px;overflow:hidden}
+.rhd{padding:11px 14px;background:var(--bench-2);border-bottom:1px solid var(--bench-rule)}
+.rhd b{font-weight:500;font-size:.9rem;display:block}
+.rhd span{font-family:var(--f-mono);font-size:.61rem;letter-spacing:.05em;color:var(--bench-muted)}
+.rrow{display:grid;grid-template-columns:40px 34px 1fr auto;gap:10px;align-items:center;padding:6px 14px;border-bottom:1px solid var(--bench-rule)}
+.rrow:last-child{border-bottom:0}
+.rrow i{height:20px;border-radius:2px;display:block}
+.rrow .nm{font-family:var(--f-mono);font-size:.66rem;color:var(--bench-muted)}
+.rrow.nmd .nm{color:var(--bench-ink);font-weight:500}
+.rrow .hx{font-family:var(--f-mono);font-size:.62rem;color:var(--bench-muted)}
+.rrow .cx{font-family:var(--f-mono);font-size:.62rem;color:var(--bench-muted);text-align:right}
+footer{padding:40px 0 72px;color:var(--bench-muted);font-size:.85rem}
+footer p{max-width:var(--measure)}
+
+
+
+
+
+
+
+
+
+
+:root {
+  
+  --font-sans: Inter, "Inter Variable", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "JetBrains Mono Variable", ui-monospace,
+               SFMono-Regular, Menlo, monospace;
+
+  --tracking-display: -0.022em;
+  --tracking-label: 0.09em;
+
+  --text-2xs: 0.6875rem; --text-xs: 0.75rem;   --text-sm: 0.8125rem;
+  --text-base: 0.875rem; --text-lg: 1rem;      --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;    --text-3xl: 1.875rem; --text-4xl: 2.5rem;
+  --measure: 68ch;
+
+  
+  --radius: 4px;                    
+  --radius-sm: 2px;
+  --radius-lg: 6px;
+  --hairline: 1px;
+
+  
+  --control-sm: 26px;
+  --control-md: 32px;
+  --control-lg: 40px;
+  --pad-x-sm: 8px;
+  --pad-x-md: 12px;
+  --pad-x-lg: 16px;
+
+  
+  --duration: 120ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  
+  --h-700: 22;    --h-620: 42;    --h-590: 88;    --h-550: 110;
+  --h-520: 155.6; --h-490: 210;   --h-470: 252.3; --h-440: 275;
+  --h-405: 296.1; --h-370: 320;
+  --h-neutral: 85;                  
+  
+
+  
+  --n-01: oklch(0.145 0.004 var(--h-neutral));
+  --n-02: oklch(0.195 0.006 var(--h-neutral));
+  --n-03: oklch(0.235 0.008 var(--h-neutral));
+  --n-04: oklch(0.285 0.009 var(--h-neutral));
+  --n-05: oklch(0.360 0.010 var(--h-neutral));
+  --n-06: oklch(0.450 0.011 var(--h-neutral));
+  --n-07: oklch(0.545 0.012 var(--h-neutral));
+  --n-08: oklch(0.640 0.012 var(--h-neutral));
+  --n-09: oklch(0.730 0.012 var(--h-neutral));
+  --n-10: oklch(0.810 0.011 var(--h-neutral));
+  --n-11: oklch(0.880 0.010 var(--h-neutral));
+  --n-12: oklch(0.937 0.010 var(--h-neutral));
+}
+
+
+
+[data-exposure="editorial"] {
+  color-scheme: light;
+
+  --ground: var(--n-12);
+  --surface: oklch(0.960 0.008 var(--h-neutral));
+  --surface-2: oklch(0.982 0.005 var(--h-neutral));
+  --rule: oklch(0.855 0.010 var(--h-neutral));
+  --rule-strong: oklch(0.760 0.011 var(--h-neutral));
+  --text: var(--n-01);                                
+  --text-prose: var(--n-03);
+  --text-muted: oklch(0.470 0.011 var(--h-neutral));   
+  --text-faint: oklch(0.545 0.012 var(--h-neutral));   
+
+  
+  --mk-700: oklch(0.630 0.241 var(--h-700));  
+  --mk-620: oklch(0.690 0.198 var(--h-620));  
+  --mk-590: oklch(0.700 0.136 var(--h-590));  
+  --mk-550: oklch(0.690 0.145 var(--h-550));  
+  --mk-520: oklch(0.680 0.158 var(--h-520));  
+  --mk-490: oklch(0.690 0.113 var(--h-490));  
+  --mk-470: oklch(0.645 0.185 var(--h-470));  
+  --mk-440: oklch(0.510 0.263 var(--h-440));  
+  --mk-405: oklch(0.600 0.236 var(--h-405));  
+  --mk-370: oklch(0.645 0.294 var(--h-370));  
+
+  
+  --dp-590: oklch(0.400 0.078 var(--h-590));
+  --dp-520: oklch(0.380 0.089 var(--h-520));
+  --dp-470: oklch(0.420 0.121 var(--h-470));
+  --dp-405: oklch(0.340 0.176 var(--h-405));
+
+  
+  --tx-700: oklch(0.540 0.196 var(--h-700));  
+  --tx-620: oklch(0.530 0.144 var(--h-620));  
+  --tx-590: oklch(0.520 0.096 var(--h-590));  
+  --tx-550: oklch(0.515 0.101 var(--h-550));  
+  --tx-520: oklch(0.505 0.111 var(--h-520));  
+  --tx-490: oklch(0.510 0.078 var(--h-490));  
+  --tx-470: oklch(0.520 0.141 var(--h-470));  
+  --tx-440: oklch(0.535 0.235 var(--h-440));  
+  --tx-405: oklch(0.550 0.256 var(--h-405));  
+  --tx-370: oklch(0.550 0.238 var(--h-370));  
+
+  
+  --on-mark: var(--n-12);
+
+  
+  --glow-sm: 0 0 0 0 transparent;
+  --glow-md: 0 0 0 0 transparent;
+  --glow-lg: 0 0 0 0 transparent;
+  
+  --dot-ring: inset 0 0 0 1px color-mix(in oklab, var(--n-01) 24%, transparent);
+  --wash: transparent;
+  --band-fill: 10%;
+  --band-edge: 40%;
+}
+
+
+
+[data-exposure="luminous"] {
+  color-scheme: dark;
+
+  --ground: var(--n-01);
+  --surface: var(--n-02);
+  --surface-2: var(--n-03);
+  --rule: var(--n-04);
+  --rule-strong: var(--n-05);
+  --text: var(--n-12);          
+  --text-prose: var(--n-11);
+  --text-muted: var(--n-08);    
+  --text-faint: var(--n-07);    
+
+  
+  --mk-700: oklch(0.630 0.241 var(--h-700));  
+  --mk-620: oklch(0.690 0.198 var(--h-620));  
+  --mk-590: oklch(0.750 0.146 var(--h-590));  
+  --mk-550: oklch(0.745 0.155 var(--h-550));  
+  --mk-520: oklch(0.730 0.169 var(--h-520));  
+  --mk-490: oklch(0.740 0.122 var(--h-490));  
+  --mk-470: oklch(0.645 0.185 var(--h-470));  
+  --mk-440: oklch(0.590 0.214 var(--h-440));  
+  --mk-405: oklch(0.605 0.232 var(--h-405));  
+  --mk-370: oklch(0.645 0.294 var(--h-370));  
+
+  
+  --dp-590: oklch(0.480 0.093 var(--h-590));
+  --dp-520: oklch(0.540 0.125 var(--h-520));
+  --dp-470: oklch(0.460 0.132 var(--h-470));
+  --dp-405: oklch(0.760 0.133 var(--h-405));
+
+  
+  --tx-700: oklch(0.690 0.180 var(--h-700));  
+  --tx-620: oklch(0.685 0.186 var(--h-620));  
+  --tx-590: oklch(0.670 0.123 var(--h-590));  
+  --tx-550: oklch(0.665 0.131 var(--h-550));  
+  --tx-520: oklch(0.650 0.143 var(--h-520));  
+  --tx-490: oklch(0.655 0.100 var(--h-490));  
+  --tx-470: oklch(0.670 0.162 var(--h-470));  
+  --tx-440: oklch(0.675 0.155 var(--h-440));  
+  --tx-405: oklch(0.685 0.170 var(--h-405));  
+  --tx-370: oklch(0.700 0.233 var(--h-370));  
+
+  
+  --on-mark: var(--n-01);
+
+  --dot-ring: 0 0 0 0 transparent;   
+  --glow-sm: 0 0 10px -1px color-mix(in oklab, var(--mark, transparent) 55%, transparent);
+  --glow-md: 0 0 22px -2px color-mix(in oklab, var(--mark, transparent) 65%, transparent);
+  --glow-lg: 0 0 48px -6px color-mix(in oklab, var(--mark, transparent) 75%, transparent);
+  --wash: radial-gradient(120% 100% at 50% 0%,
+          color-mix(in oklab, var(--mark, transparent) 18%, transparent) 0%,
+          transparent 70%);
+  --band-fill: 14%;
+  --band-edge: 45%;
+}
+
+
+
+[data-band="interface"]    { --mark: var(--mk-590); --tint: var(--tx-590); }
+[data-band="systems"]      { --mark: var(--mk-520); --tint: var(--tx-520); }
+[data-band="compute"]      { --mark: var(--mk-470); --tint: var(--tx-470); }
+[data-band="intelligence"] { --mark: var(--mk-405); --tint: var(--tx-405); }
+[data-band="warning"]      { --mark: var(--mk-620); --tint: var(--tx-620); }
+[data-band="critical"]     { --mark: var(--mk-700); --tint: var(--tx-700); }
+
+
+
+[data-exposure] {
+  --background: var(--ground);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface-2);
+  --popover-foreground: var(--text);
+
+  
+  --primary: var(--text);
+  --primary-foreground: var(--ground);
+
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--text);
+
+  --destructive: var(--mk-700);
+  --destructive-foreground: var(--on-mark);
+
+  --border: var(--rule);
+  --input: var(--rule);
+  
+  --ring: var(--text);
+  --ring-offset: var(--ground);
+
+  
+  --chart-1: var(--mk-590);   
+  --chart-2: var(--mk-520);   
+  --chart-3: var(--mk-490);   
+  --chart-4: var(--mk-470);   
+  --chart-5: var(--mk-405);   
+  --chart-6: var(--mk-370);   
+
+  
+  --chart-7: var(--dp-470);  --chart-8: var(--dp-405);
+
+  
+  --chart-grid: color-mix(in oklab, var(--rule) 60%, transparent);
+  --chart-axis: var(--rule);
+  --chart-label: var(--text-faint);
+
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--text);
+  --sidebar-primary: var(--text);
+  --sidebar-primary-foreground: var(--ground);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--text);
+  --sidebar-border: var(--rule);
+  --sidebar-ring: var(--text);
+}
+
+
+
+[data-exposure] ::selection { background: color-mix(in oklab, var(--mk-590) 30%, transparent); color: var(--text); }
+
+[data-exposure] {
+  
+  --code-bg: var(--surface);
+  --code-text: var(--text-prose);
+  --code-comment: var(--text-faint);
+  --code-keyword: var(--tx-405);
+  --code-string: var(--tx-520);
+  --code-number: var(--tx-590);
+  --code-function: var(--tx-470);
+  --code-punctuation: var(--text-muted);
+  --code-added: var(--tx-520);
+  --code-removed: var(--tx-700);
+
+  
+  scrollbar-color: var(--rule-strong) transparent;
+  scrollbar-width: thin;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+
+
+
+
+[data-exposure] {
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+[data-exposure] :is(.shadow,.shadow-sm,.shadow-md,.shadow-lg,.shadow-xl,.shadow-2xl) {
+  box-shadow: none;
+}
+
+
+[data-exposure] :focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+
+.wl-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.wl-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  line-height: 1.4;
+}
+
+.wl-display {
+  letter-spacing: var(--tracking-display);
+  font-weight: 500;
+}
+
+
+
+.wl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--control-md);
+  padding: 0 var(--pad-x-md);
+  border-radius: var(--radius);
+  border: var(--hairline) solid transparent;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              color var(--duration) var(--ease);
+}
+.wl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+
+.wl-btn--primary { background: var(--primary); color: var(--primary-foreground); }
+.wl-btn--primary:hover:not(:disabled) { background: color-mix(in oklab, var(--primary) 86%, var(--ground)); }
+.wl-btn--primary:active:not(:disabled) { background: color-mix(in oklab, var(--primary) 76%, var(--ground)); }
+
+
+.wl-btn--secondary {
+  background: var(--surface-2); color: var(--text); border-color: var(--rule);
+}
+.wl-btn--secondary:hover:not(:disabled) { border-color: var(--rule-strong); background: var(--surface); }
+
+
+.wl-btn--outline { background: transparent; color: var(--text); border-color: var(--rule); }
+.wl-btn--outline:hover:not(:disabled) { border-color: var(--rule-strong); background: var(--surface); }
+
+
+.wl-btn--ghost { background: transparent; color: var(--text-muted); }
+.wl-btn--ghost:hover:not(:disabled) { background: var(--surface); color: var(--text); }
+
+
+.wl-btn--destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.wl-btn--destructive:hover:not(:disabled) { background: color-mix(in oklab, var(--destructive) 86%, var(--ground)); }
+
+
+.wl-btn--link {
+  background: transparent; color: var(--tx-590); height: auto; padding: 0;
+  text-decoration: underline; text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--tx-590) 40%, transparent);
+}
+.wl-btn--link:hover { text-decoration-color: var(--tx-590); }
+
+.wl-btn--sm { height: var(--control-sm); padding: 0 var(--pad-x-sm); font-size: var(--text-xs); }
+.wl-btn--lg { height: var(--control-lg); padding: 0 var(--pad-x-lg); font-size: var(--text-base); }
+.wl-btn--icon { width: var(--control-md); padding: 0; }
+
+
+
+.wl-input {
+  width: 100%;
+  height: var(--control-md);
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: var(--hairline) solid var(--input);
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  transition: border-color var(--duration) var(--ease);
+}
+.wl-input::placeholder { color: var(--text-faint); }
+.wl-input:hover:not(:disabled) { border-color: var(--rule-strong); }
+.wl-input:disabled { opacity: 0.5; cursor: not-allowed; }
+.wl-input[aria-invalid="true"] { border-color: var(--mk-700); }
+textarea.wl-input { height: auto; padding: 8px 10px; min-height: 72px; resize: vertical; line-height: 1.5; }
+
+
+.wl-input--mono { font-family: var(--font-mono); font-size: var(--text-xs); }
+
+.wl-field { display: flex; flex-direction: column; gap: 5px; }
+.wl-field .wl-hint { font-size: var(--text-xs); color: var(--text-muted); }
+.wl-field .wl-error { font-size: var(--text-xs); color: var(--tx-700); }
+
+
+
+.wl-check {
+  appearance: none; margin: 0;
+  width: 15px; height: 15px;
+  border: var(--hairline) solid var(--rule-strong);
+  border-radius: var(--radius-sm);       
+  background: var(--ground);
+  display: inline-grid; place-content: center;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+.wl-check:checked { background: var(--primary); border-color: var(--primary); }
+.wl-check:checked::after {
+  content: ""; width: 8px; height: 4px;
+  border-left: 1.75px solid var(--primary-foreground);
+  border-bottom: 1.75px solid var(--primary-foreground);
+  transform: rotate(-45deg) translate(0.5px, -1px);
+}
+.wl-check--radio { border-radius: 50%; }
+.wl-check--radio:checked::after {
+  width: 6px; height: 6px; border: 0; border-radius: 50%; transform: none;
+  background: var(--primary-foreground);
+}
+
+
+.wl-switch {
+  appearance: none; margin: 0;
+  width: 32px; height: 18px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: var(--hairline) solid var(--rule-strong);
+  position: relative; cursor: pointer;
+  transition: background-color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+.wl-switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform var(--duration) var(--ease), background-color var(--duration) var(--ease);
+}
+.wl-switch:checked { background: var(--primary); border-color: var(--primary); }
+.wl-switch:checked::after { transform: translateX(14px); background: var(--primary-foreground); }
+
+
+
+.wl-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 20px; padding: 0 7px;
+  border-radius: var(--radius-sm);
+  border: var(--hairline) solid var(--rule);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.wl-chip::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--mark); box-shadow: var(--glow-sm), var(--dot-ring); flex: none;
+}
+.wl-chip--solid {
+  background: var(--mark); color: var(--on-mark);
+  border-color: transparent; box-shadow: var(--glow-sm); font-weight: 500;
+}
+.wl-chip--solid::before { display: none; }
+.wl-chip--bare::before { display: none; }
+
+
+
+.wl-card {
+  border: var(--hairline) solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: none;
+}
+.wl-card__head { padding: 12px 14px; border-bottom: var(--hairline) solid var(--rule); }
+.wl-card__body { padding: 14px; }
+.wl-card__foot { padding: 12px 14px; border-top: var(--hairline) solid var(--rule); }
+
+.wl-sep { border: 0; border-top: var(--hairline) solid var(--rule); margin: 0; }
+
+
+
+.wl-tabs { display: flex; gap: 2px; border-bottom: var(--hairline) solid var(--rule); }
+.wl-tab {
+  appearance: none; background: transparent; border: 0;
+  padding: 7px 12px;
+  font-family: var(--font-mono); font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-label); text-transform: uppercase;
+  color: var(--text-faint); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+}
+.wl-tab:hover { color: var(--text); }
+.wl-tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--mk-590); }
+
+
+
+.wl-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.wl-table th {
+  text-align: left; padding: 8px 12px;
+  border-bottom: var(--hairline) solid var(--rule);
+  font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 400;
+  letter-spacing: var(--tracking-label); text-transform: uppercase;
+  color: var(--text-faint); white-space: nowrap;
+}
+.wl-table td { padding: 8px 12px; border-bottom: var(--hairline) solid var(--rule); }
+.wl-table tr:last-child td { border-bottom: 0; }
+.wl-table tbody tr:hover { background: var(--surface); }
+.wl-table .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--text-muted); }
+
+
+
+.wl-alert {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px;
+  padding: 11px 13px;
+  border: var(--hairline) solid var(--rule);
+  border-left: 2px solid var(--mark, var(--rule-strong));
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.wl-alert__title { font-size: var(--text-sm); font-weight: 500; margin: 0; }
+.wl-alert__body { font-size: var(--text-sm); color: var(--text-muted); margin: 3px 0 0; }
+
+
+
+.wl-dialog {
+  border: var(--hairline) solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: none;
+}
+.wl-overlay { background: color-mix(in oklab, var(--n-01) 62%, transparent); }
+.wl-tooltip {
+  background: var(--text); color: var(--ground);
+  padding: 4px 7px; border-radius: var(--radius-sm);
+  font-family: var(--font-mono); font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+}
+
+
+
+.wl-progress {
+  height: 4px; border-radius: 1px; background: var(--surface-2); overflow: hidden;
+}
+.wl-progress__bar {
+  height: 100%; background: var(--mark, var(--primary)); box-shadow: var(--glow-sm);
+}
+
+.wl-meter { display: flex; gap: 2px; height: 14px; }
+.wl-meter i { flex: 1; border-radius: 1px; background: var(--surface-2); }
+.wl-meter i[data-on] { background: var(--mark); box-shadow: var(--glow-sm); }
+
+.wl-skeleton {
+  background: var(--surface-2); border-radius: var(--radius-sm);
+  animation: wl-pulse 1.6s var(--ease) infinite;
+}
+@keyframes wl-pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.55 } }
+
+
+
+.wl-status { width: 7px; height: 7px; border-radius: 50%; flex: none; display: inline-block; }
+.wl-status[data-state="ok"]       { background: var(--text-faint); }
+.wl-status[data-state="watch"]    { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text); }
+.wl-status[data-state="critical"] { --mark: var(--mk-700); background: var(--mk-700); box-shadow: var(--glow-sm), var(--dot-ring); }
+
+.g{padding:18px 16px;display:flex;flex-direction:column;gap:9px}
+.gl{font-family:var(--f-mono);font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint);margin:12px 0 2px}
+.g>.gl:first-child{margin-top:0}
+.gr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.gc{display:flex;flex-direction:column;gap:12px}
+.ck{display:inline-flex;align-items:center;gap:7px;font-size:var(--text-sm);color:var(--text)}
+.bars{display:flex;align-items:flex-end;gap:5px;height:76px}
+.bars span{flex:1;border-radius:1px 1px 0 0;box-shadow:var(--glow-sm)}
+.spec{border-radius:4px;overflow:hidden;border:1px solid var(--rule)}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="lab">Design system &middot; v5 &middot; Aug 2026</p>
+    <h1>One spectrum, two exposures</h1>
+    <p class="thesis">Swiss grid, instrument-panel detail, prism colour. One grid, one type scale, one spectrum &mdash; rendered two ways depending on whether the artefact is <em>read</em> or <em>operated</em>.</p>
+    <p class="thesis">An exposure is not a light/dark theme. A theme recolours a fixed design. An exposure changes what light is doing: editorial <strong>marks</strong> with pigment, luminous <strong>emits</strong>. Ink and paper swap; the spectrum re-solves for the new ground.</p>
+    <div class="swap">
+      <div class="a">Editorial<span>ink on paper &middot; author</span></div>
+      <div class="b">Luminous<span>paper on ink &middot; product</span></div>
+    </div>
+  </header>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">01 / Colour</p><h2>Each ground solves its own ring</h2></div>
+    <p class="sintro">Earlier versions used one vivid mark ring for both grounds, on the reasoning that a brand colour shouldn't change between light and dark. Measured, that was wrong. The shared 590nm amber sat at <strong>10.15:1 on ink and 1.71:1 on paper</strong> &mdash; a strong mark in one exposure and effectively invisible in the other.</p>
+    <p class="sintro" style="margin-top:-18px">Each exposure now solves its own ring: maximum chroma subject to a contrast <em>window</em> against its own ground &mdash; 3.0&ndash;5.5:1 on paper, 4.5&ndash;9.0:1 on ink. A window rather than a floor, because pure chroma-maximisation produced a 16.7:1 neon lime beside a 3.1:1 indigo: one member blinding, another dim. Hue angles stay identical across exposures, so a band is recognisably the same colour in both. It is the <strong>intensity</strong> that re-solves &mdash; which is exactly what changes when pigment moves onto a lit surface.</p>
+
+    <div class="plates">
+      <div class="ringplate" data-exposure="editorial" style="background:var(--ground)">
+        <div class="rhd" style="background:var(--surface);border-color:var(--rule);color:var(--text)"><b>Editorial marks</b><span>on paper &middot; 2.2&ndash;5:1 &middot; chroma-first</span></div>
+        <div style="padding:4px 0" data-exposure="editorial">
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">590</span><i style="background:var(--mk-590)"></i><span class="hx">#C2981D interface</span><span class="cx">2.24</span></div>
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">520</span><i style="background:var(--mk-520)"></i><span class="hx">#21B46D systems</span><span class="cx">2.24</span></div>
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">470</span><i style="background:var(--mk-470)"></i><span class="hx">#1A8FF9 compute</span><span class="cx">2.76</span></div>
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">405</span><i style="background:var(--mk-405)"></i><span class="hx">#851FF8 intelligence</span><span class="cx">4.93</span></div>
+          <div class="rrow" style="border-color:var(--rule)"><span class="nm">620</span><i style="background:var(--mk-620)"></i><span class="hx">#FB661C warning</span><span class="cx">2.49</span></div>
+          <div class="rrow" style="border-color:var(--rule)"><span class="nm">700</span><i style="background:var(--mk-700)"></i><span class="hx">#F92040 critical</span><span class="cx">3.29</span></div>
+        </div>
+      </div>
+
+      <div class="ringplate" data-exposure="luminous" style="background:var(--ground)">
+        <div class="rhd" style="background:var(--surface);border-color:var(--rule);color:var(--text)"><b>Luminous marks</b><span>on ink &middot; 4.5&ndash;9.0:1 &middot; lighter, emissive</span></div>
+        <div style="padding:4px 0">
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">590</span><i style="background:var(--mk-590)"></i><span class="hx">#D4A721 interface</span><span class="cx">8.81</span></div>
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">520</span><i style="background:var(--mk-520)"></i><span class="hx">#25C678 systems</span><span class="cx">8.88</span></div>
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">470</span><i style="background:var(--mk-470)"></i><span class="hx">#1A8FF9 compute</span><span class="cx">5.98</span></div>
+          <div class="rrow nmd" style="border-color:var(--rule)"><span class="nm">405</span><i style="background:var(--mk-405)"></i><span class="hx">#9354F9 intelligence</span><span class="cx">4.60</span></div>
+          <div class="rrow" style="border-color:var(--rule)"><span class="nm">620</span><i style="background:var(--mk-620)"></i><span class="hx">#FB661C warning</span><span class="cx">6.61</span></div>
+          <div class="rrow" style="border-color:var(--rule)"><span class="nm">700</span><i style="background:var(--mk-700)"></i><span class="hx">#F92040 critical</span><span class="cx">5.00</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="note"><strong>Two corrections in this pass.</strong></p>
+    <div class="layers" style="margin-top:14px">
+      <div class="layer"><span class="tag">Paper</span><div><b>The 3:1 floor was the dullness</b><p>Marks were pinned at exactly 3:1 against paper, and on the warm hues that sits well below the chroma peak &mdash; costing 9&ndash;13% saturation. Dropping the floor to 2.2:1 puts 590nm at C&nbsp;0.140 instead of 0.128 and 520nm at 0.158 instead of 0.140: amber stops reading as brown. A fill that carries a label does not need 3:1 with the page; only an affordance does. Small marks get a 1px ring instead of a darker hue &mdash; a component fix, not a colour one.</p></div></div>
+      <div class="layer"><span class="tag">Warm end</span><div><b>Interface and warning were 16&deg; apart</b><p>You spotted this by eye; measured, it was <strong>&Delta;E 0.054</strong> &mdash; tighter than the 0.078 pair this system already rejected for charts. Interface moves toward yellow (71.3&deg; &rarr; 78&deg;), warning toward red-orange (55&deg; &rarr; 45&deg;): a 33&deg; gap, &Delta;E 0.106&ndash;0.118, more than doubled. Warning and critical now read as a severity ramp, which is right &mdash; those two <em>are</em> related. Interface is related to neither.</p></div></div>
+      <div class="layer"><span class="tag">700nm</span><div><b>Critical is the one exposure-invariant hue</b><p><code>#FA2033</code> clears the window on paper and on ink without moving. Warning now joins it at <code>#FA6E1C</code>. Both functional hues being identical across exposures is semantically right: an alarm is an alarm.</p></div></div>
+    </div>
+  </section>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">02 / Chart series</p><h2>Six, not eight &mdash; settled by measurement</h2></div>
+    <p class="sintro">You pushed back on four-hues-times-two-depths and you were right to, though not for the reason either of us assumed. I re-measured all three options against the current per-exposure rings. Minimum pairwise OKLab &Delta;E across the whole set &mdash; the smaller the number, the harder two series are to tell apart:</p>
+
+    <div class="tscroll">
+      <table class="map">
+        <thead><tr><th>Option</th><th>Paper</th><th>Ink</th><th></th></tr></thead>
+        <tbody>
+          <tr><td class="n">8 hues, evenly spread</td><td class="n">0.079</td><td class="n">0.085</td><td class="d">Collides worse than the pair this system already rejected. The categorical arc is only ~300&deg; once 15&ndash;58&deg; is reserved for warning and critical, and cyan/blue and indigo/violet collapse into each other however they are built.</td></tr>
+          <tr><td class="n">4 hues &times; 2 depths</td><td class="n">0.107</td><td class="n">0.152</td><td class="d">Separated better on ink, but bought it with four muddy deep stops &mdash; which is exactly the dullness you flagged, reintroduced in slots 5&ndash;8.</td></tr>
+          <tr><td class="n"><strong>6 hues, all at peak chroma</strong></td><td class="n"><strong>0.131</strong></td><td class="n"><strong>0.131</strong></td><td class="d">Every stop at its own gamut ceiling, nothing collides, and it is finally a plain rainbow scale in dispersion order.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note"><strong>Six is the number.</strong> Your instinct &mdash; a simple rainbow with solid colours picked for vibrance per exposure &mdash; is right; it just tops out at six rather than eight. The four named bands are members, joined by cyan at 210&deg; and magenta at 320&deg;, the two positions that fill the widest gaps. Past six series, stop using colour and label directly. Two deep stops remain as an explicit overflow, flagged in the tokens as a step down rather than a first choice.</p>
+    <p class="note"><strong>And the prism claim is finally honest.</strong> Earlier versions ran the chart through the ring in dispersion order because it looked good, when the hues were too close to survive it. At six stops the ordering is both pretty and correct.</p>
+  </section>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">03 / Moulding shadcn</p><h2>Seven decisions do almost all the work</h2></div>
+    <p class="sintro">shadcn is copy-in source, not a dependency. Applied together, these remove essentially all of the &ldquo;default shadcn app&rdquo; tell without rewriting a single primitive.</p>
+
+    <div class="layers">
+      <div class="layer"><span class="tag">01 Radius</span><div><b>4px, not 8px</b><p>The single largest visual tell. Near-square is the house geometry; 4px is the ceiling, 2px for small controls.</p></div></div>
+      <div class="layer"><span class="tag">02 Shadow</span><div><b>None. Anywhere.</b><p>shadcn leans on <code>shadow-sm/md</code> for cards, popovers and dropdowns. Every one becomes a 1px hairline. Depth is rules in editorial, emission in luminous &mdash; never blur.</p></div></div>
+      <div class="layer"><span class="tag">03 Density</span><div><b>Controls at 26 / 32 / 40px</b><p>One step tighter than shadcn's 32/36/44. Instrument panels are dense; marketing pages are not.</p></div></div>
+      <div class="layer"><span class="tag">04 Numerals</span><div><b>Mono, tabular, everywhere data appears</b><p>Figures, timestamps, IDs, units, states. <code>font-variant-numeric: tabular-nums</code> so columns align. The strongest &ldquo;engineered&rdquo; signal in the system, and it costs nothing.</p></div></div>
+      <div class="layer"><span class="tag">05 Focus</span><div><b>Amber, 2px, offset 2px</b><p>A hard instrument indicator, not a soft glow. The one place a band colour touches chrome &mdash; justified because focus is a signal rather than decoration.</p></div></div>
+      <div class="layer"><span class="tag">06 Motion</span><div><b>Colour only, 120ms</b><p>No scale, no translate, no shadow bloom. A control that moves under the cursor reads as a toy.</p></div></div>
+      <div class="layer"><span class="tag">07 Labels</span><div><b>Uppercase mono, 0.09em tracking</b><p>Every section header, table header and field label. Never body copy, never headings.</p></div></div>
+    </div>
+
+    <p class="note"><strong>The one sanctioned pill.</strong> A Switch is fully rounded and has to be &mdash; the affordance is a knob travelling along a track, and a square switch reads as two checkboxes. It and the status dot are the only round things in the system.</p>
+  </section>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">04 / Components</p><h2>The same markup, both exposures</h2></div>
+    <p class="sintro">Every control below is one set of classes over the token contract. Nothing here is conditioned on which exposure it is in &mdash; the buttons, fields, chips, table, alerts and charts are identical markup, rendered twice.</p>
+
+    <div class="plates">
+      <figure class="plate">
+        <figcaption><b>Editorial</b> <span>ink on paper</span></figcaption>
+        <div class="spec" data-exposure="editorial">
+      <div class="g">
+        <p class="gl">Button — variants</p>
+        <div class="gr">
+          <button class="wl-btn wl-btn--primary">Get in touch</button>
+          <button class="wl-btn wl-btn--secondary">Secondary</button>
+          <button class="wl-btn wl-btn--outline">Outline</button>
+          <button class="wl-btn wl-btn--ghost">Ghost</button>
+          <button class="wl-btn wl-btn--destructive">Delete</button>
+          <button class="wl-btn wl-btn--link">Link</button>
+        </div>
+
+        <p class="gl">Button — sizes &amp; states</p>
+        <div class="gr">
+          <button class="wl-btn wl-btn--secondary wl-btn--sm">Small</button>
+          <button class="wl-btn wl-btn--secondary">Medium</button>
+          <button class="wl-btn wl-btn--secondary wl-btn--lg">Large</button>
+          <button class="wl-btn wl-btn--secondary wl-btn--icon" aria-label="Settings">&#9881;</button>
+          <button class="wl-btn wl-btn--primary" disabled>Disabled</button>
+          <span class="wl-btn wl-btn--outline" style="outline:2px solid var(--ring);outline-offset:2px">Focus</span>
+        </div>
+
+        <p class="gl">Field</p>
+        <div class="gc">
+          <div class="wl-field">
+            <label class="wl-label" for="f1-ed">Search writing</label>
+            <input class="wl-input" id="f1-ed" placeholder="Retrieval evals…" readonly>
+            <span class="wl-hint">Hairline border, 4px radius, amber focus.</span>
+          </div>
+          <div class="wl-field">
+            <label class="wl-label" for="f2-ed">Region</label>
+            <input class="wl-input wl-input--mono" id="f2-ed" value="eu-west-2" readonly>
+            <span class="wl-hint">Data fields are mono.</span>
+          </div>
+          <div class="wl-field">
+            <label class="wl-label" for="f3-ed">Threshold</label>
+            <input class="wl-input" id="f3-ed" value="not-a-number" aria-invalid="true" readonly>
+            <span class="wl-error">Must be a positive integer.</span>
+          </div>
+        </div>
+
+        <p class="gl">Choice</p>
+        <div class="gr">
+          <label class="ck"><input type="checkbox" class="wl-check" checked readonly> Tabular numerals</label>
+          <label class="ck"><input type="checkbox" class="wl-check" readonly> Reduced motion</label>
+          <label class="ck"><input type="radio" name="r-ed" class="wl-check wl-check--radio" checked readonly> Editorial</label>
+          <label class="ck"><input type="radio" name="r-ed" class="wl-check wl-check--radio" readonly> Luminous</label>
+          <label class="ck"><input type="checkbox" class="wl-switch" checked readonly> Emission</label>
+        </div>
+
+        <p class="gl">Badge — the band chip</p>
+        <div class="gr">
+          <span class="wl-chip" data-band="interface">590nm Interface</span>
+          <span class="wl-chip" data-band="systems">520nm Systems</span>
+          <span class="wl-chip" data-band="compute">470nm Compute</span>
+          <span class="wl-chip" data-band="intelligence">405nm Intelligence</span>
+        </div>
+        <div class="gr">
+          <span class="wl-chip wl-chip--solid" data-band="interface">590</span>
+          <span class="wl-chip wl-chip--solid" data-band="systems">520</span>
+          <span class="wl-chip wl-chip--solid" data-band="compute">470</span>
+          <span class="wl-chip wl-chip--solid" data-band="intelligence">405</span>
+          <span class="wl-chip wl-chip--solid" data-band="warning">Warning</span>
+          <span class="wl-chip wl-chip--solid" data-band="critical">Critical</span>
+        </div>
+
+        <p class="gl">Tabs</p>
+        <div class="wl-tabs">
+          <button class="wl-tab" aria-selected="true">Overview</button>
+          <button class="wl-tab">Traces</button>
+          <button class="wl-tab">Alerts</button>
+          <button class="wl-tab">Settings</button>
+        </div>
+
+        <p class="gl">Table</p>
+        <div class="wl-card">
+          <table class="wl-table">
+            <thead><tr><th></th><th>Service</th><th>Band</th><th class="num">p99</th><th class="num">Err %</th></tr></thead>
+            <tbody>
+              <tr><td><span class="wl-status" data-state="ok"></span></td><td>Edge / Next.js</td><td><span class="wl-chip" data-band="interface">590</span></td><td class="num">42</td><td class="num">0.01</td></tr>
+              <tr><td><span class="wl-status" data-state="ok"></span></td><td>API / Node</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">88</td><td class="num">0.04</td></tr>
+              <tr><td><span class="wl-status" data-state="watch"></span></td><td>PostgreSQL primary</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">211</td><td class="num">0.12</td></tr>
+              <tr><td><span class="wl-status" data-state="critical"></span></td><td>Embedding worker</td><td><span class="wl-chip" data-band="intelligence">405</span></td><td class="num">&mdash;</td><td class="num">7.80</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="gl">Alert — a rail, not a tinted box</p>
+        <div class="gc">
+          <div class="wl-alert" data-band="critical">
+            <span class="wl-status" data-state="critical" style="margin-top:5px"></span>
+            <div><p class="wl-alert__title">Embedding worker unreachable</p>
+            <p class="wl-alert__body">Four consecutive health checks timed out. Queue depth is climbing.</p></div>
+          </div>
+          <div class="wl-alert" data-band="warning">
+            <span class="wl-status" data-state="watch" style="margin-top:5px"></span>
+            <div><p class="wl-alert__title">Primary replication lag</p>
+            <p class="wl-alert__body">211ms, above the 150ms threshold for 12 minutes.</p></div>
+          </div>
+        </div>
+
+        <p class="gl">Progress · meter · skeleton</p>
+        <div class="gc">
+          <div>
+            <p class="wl-label" style="margin-bottom:5px">Index rebuild &mdash; <span class="wl-num">68%</span></p>
+            <div class="wl-progress" data-band="compute"><div class="wl-progress__bar" style="width:68%"></div></div>
+          </div>
+          <div>
+            <p class="wl-label" style="margin-bottom:5px">Seats used &mdash; <span class="wl-num">18 / 25</span></p>
+            <div class="wl-meter" data-band="systems">
+              <i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i>
+              <i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i>
+              <i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="wl-skeleton" style="width:34px;height:34px"></div>
+            <div style="flex:1"><div class="wl-skeleton" style="height:9px;width:52%;margin-bottom:6px"></div><div class="wl-skeleton" style="height:9px;width:34%"></div></div>
+          </div>
+        </div>
+
+        <p class="gl">Dialog · tooltip</p>
+        <div class="gc">
+          <div class="wl-dialog" style="padding:16px">
+            <p class="wl-label">Confirm</p>
+            <p style="margin:7px 0 0;font-size:var(--text-sm)">Terminate <span class="wl-num">3</span> running containers in <span class="wl-num">eu-west-2</span>?</p>
+            <div class="gr" style="margin-top:14px">
+              <button class="wl-btn wl-btn--destructive wl-btn--sm">Terminate</button>
+              <button class="wl-btn wl-btn--ghost wl-btn--sm">Cancel</button>
+            </div>
+          </div>
+          <div><span class="wl-tooltip">P99 &middot; 24H WINDOW</span></div>
+        </div>
+
+        <p class="gl">Chart series &mdash; six vivid hues, dispersion order</p>
+        <div class="bars">
+          <span style="background:var(--chart-1);height:78%"></span><span style="background:var(--chart-2);height:100%"></span>
+          <span style="background:var(--chart-3);height:64%"></span><span style="background:var(--chart-4);height:88%"></span>
+          <span style="background:var(--chart-5);height:44%"></span><span style="background:var(--chart-6);height:60%"></span>
+        </div>
+      </div></div>
+      </figure>
+      <figure class="plate">
+        <figcaption><b>Luminous</b> <span>paper on ink</span></figcaption>
+        <div class="spec" data-exposure="luminous">
+      <div class="g">
+        <p class="gl">Button — variants</p>
+        <div class="gr">
+          <button class="wl-btn wl-btn--primary">Deploy</button>
+          <button class="wl-btn wl-btn--secondary">Secondary</button>
+          <button class="wl-btn wl-btn--outline">Outline</button>
+          <button class="wl-btn wl-btn--ghost">Ghost</button>
+          <button class="wl-btn wl-btn--destructive">Terminate</button>
+          <button class="wl-btn wl-btn--link">Link</button>
+        </div>
+
+        <p class="gl">Button — sizes &amp; states</p>
+        <div class="gr">
+          <button class="wl-btn wl-btn--secondary wl-btn--sm">Small</button>
+          <button class="wl-btn wl-btn--secondary">Medium</button>
+          <button class="wl-btn wl-btn--secondary wl-btn--lg">Large</button>
+          <button class="wl-btn wl-btn--secondary wl-btn--icon" aria-label="Settings">&#9881;</button>
+          <button class="wl-btn wl-btn--primary" disabled>Disabled</button>
+          <span class="wl-btn wl-btn--outline" style="outline:2px solid var(--ring);outline-offset:2px">Focus</span>
+        </div>
+
+        <p class="gl">Field</p>
+        <div class="gc">
+          <div class="wl-field">
+            <label class="wl-label" for="f1-lu">Filter services</label>
+            <input class="wl-input" id="f1-lu" placeholder="Service name…" readonly>
+            <span class="wl-hint">Hairline border, 4px radius, amber focus.</span>
+          </div>
+          <div class="wl-field">
+            <label class="wl-label" for="f2-lu">Region</label>
+            <input class="wl-input wl-input--mono" id="f2-lu" value="eu-west-2" readonly>
+            <span class="wl-hint">Data fields are mono.</span>
+          </div>
+          <div class="wl-field">
+            <label class="wl-label" for="f3-lu">Threshold</label>
+            <input class="wl-input" id="f3-lu" value="not-a-number" aria-invalid="true" readonly>
+            <span class="wl-error">Must be a positive integer.</span>
+          </div>
+        </div>
+
+        <p class="gl">Choice</p>
+        <div class="gr">
+          <label class="ck"><input type="checkbox" class="wl-check" checked readonly> Tabular numerals</label>
+          <label class="ck"><input type="checkbox" class="wl-check" readonly> Reduced motion</label>
+          <label class="ck"><input type="radio" name="r-lu" class="wl-check wl-check--radio" checked readonly> Editorial</label>
+          <label class="ck"><input type="radio" name="r-lu" class="wl-check wl-check--radio" readonly> Luminous</label>
+          <label class="ck"><input type="checkbox" class="wl-switch" checked readonly> Emission</label>
+        </div>
+
+        <p class="gl">Badge — the band chip</p>
+        <div class="gr">
+          <span class="wl-chip" data-band="interface">590nm Interface</span>
+          <span class="wl-chip" data-band="systems">520nm Systems</span>
+          <span class="wl-chip" data-band="compute">470nm Compute</span>
+          <span class="wl-chip" data-band="intelligence">405nm Intelligence</span>
+        </div>
+        <div class="gr">
+          <span class="wl-chip wl-chip--solid" data-band="interface">590</span>
+          <span class="wl-chip wl-chip--solid" data-band="systems">520</span>
+          <span class="wl-chip wl-chip--solid" data-band="compute">470</span>
+          <span class="wl-chip wl-chip--solid" data-band="intelligence">405</span>
+          <span class="wl-chip wl-chip--solid" data-band="warning">Warning</span>
+          <span class="wl-chip wl-chip--solid" data-band="critical">Critical</span>
+        </div>
+
+        <p class="gl">Tabs</p>
+        <div class="wl-tabs">
+          <button class="wl-tab" aria-selected="true">Overview</button>
+          <button class="wl-tab">Traces</button>
+          <button class="wl-tab">Alerts</button>
+          <button class="wl-tab">Settings</button>
+        </div>
+
+        <p class="gl">Table</p>
+        <div class="wl-card">
+          <table class="wl-table">
+            <thead><tr><th></th><th>Service</th><th>Band</th><th class="num">p99</th><th class="num">Err %</th></tr></thead>
+            <tbody>
+              <tr><td><span class="wl-status" data-state="ok"></span></td><td>Edge / Next.js</td><td><span class="wl-chip" data-band="interface">590</span></td><td class="num">42</td><td class="num">0.01</td></tr>
+              <tr><td><span class="wl-status" data-state="ok"></span></td><td>API / Node</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">88</td><td class="num">0.04</td></tr>
+              <tr><td><span class="wl-status" data-state="watch"></span></td><td>PostgreSQL primary</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">211</td><td class="num">0.12</td></tr>
+              <tr><td><span class="wl-status" data-state="critical"></span></td><td>Embedding worker</td><td><span class="wl-chip" data-band="intelligence">405</span></td><td class="num">&mdash;</td><td class="num">7.80</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="gl">Alert — a rail, not a tinted box</p>
+        <div class="gc">
+          <div class="wl-alert" data-band="critical">
+            <span class="wl-status" data-state="critical" style="margin-top:5px"></span>
+            <div><p class="wl-alert__title">Embedding worker unreachable</p>
+            <p class="wl-alert__body">Four consecutive health checks timed out. Queue depth is climbing.</p></div>
+          </div>
+          <div class="wl-alert" data-band="warning">
+            <span class="wl-status" data-state="watch" style="margin-top:5px"></span>
+            <div><p class="wl-alert__title">Primary replication lag</p>
+            <p class="wl-alert__body">211ms, above the 150ms threshold for 12 minutes.</p></div>
+          </div>
+        </div>
+
+        <p class="gl">Progress · meter · skeleton</p>
+        <div class="gc">
+          <div>
+            <p class="wl-label" style="margin-bottom:5px">Index rebuild &mdash; <span class="wl-num">68%</span></p>
+            <div class="wl-progress" data-band="compute"><div class="wl-progress__bar" style="width:68%"></div></div>
+          </div>
+          <div>
+            <p class="wl-label" style="margin-bottom:5px">Seats used &mdash; <span class="wl-num">18 / 25</span></p>
+            <div class="wl-meter" data-band="systems">
+              <i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i>
+              <i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i>
+              <i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i><i data-on></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="wl-skeleton" style="width:34px;height:34px"></div>
+            <div style="flex:1"><div class="wl-skeleton" style="height:9px;width:52%;margin-bottom:6px"></div><div class="wl-skeleton" style="height:9px;width:34%"></div></div>
+          </div>
+        </div>
+
+        <p class="gl">Dialog · tooltip</p>
+        <div class="gc">
+          <div class="wl-dialog" style="padding:16px">
+            <p class="wl-label">Confirm</p>
+            <p style="margin:7px 0 0;font-size:var(--text-sm)">Terminate <span class="wl-num">3</span> running containers in <span class="wl-num">eu-west-2</span>?</p>
+            <div class="gr" style="margin-top:14px">
+              <button class="wl-btn wl-btn--destructive wl-btn--sm">Terminate</button>
+              <button class="wl-btn wl-btn--ghost wl-btn--sm">Cancel</button>
+            </div>
+          </div>
+          <div><span class="wl-tooltip">P99 &middot; 24H WINDOW</span></div>
+        </div>
+
+        <p class="gl">Chart series &mdash; six vivid hues, dispersion order</p>
+        <div class="bars">
+          <span style="background:var(--chart-1);height:78%"></span><span style="background:var(--chart-2);height:100%"></span>
+          <span style="background:var(--chart-3);height:64%"></span><span style="background:var(--chart-4);height:88%"></span>
+          <span style="background:var(--chart-5);height:44%"></span><span style="background:var(--chart-6);height:60%"></span>
+        </div>
+      </div></div>
+      </figure>
+    </div>
+
+    <p class="note"><strong>Where to look.</strong> The primary button is ink, not amber &mdash; a button is chrome, and rule one says chrome carries no band. The chips carry hue as a vivid dot with full-contrast text, because tinting both the fill and the type in the same hue cancels itself out. The alerts use a coloured rail rather than a tinted box. And the table's figures are mono and tabular, which is why the columns line up without any alignment CSS.</p>
+  </section>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">05 / Contract</p><h2>What shadcn actually reads</h2></div>
+    <div class="tscroll">
+      <table class="map">
+        <thead><tr><th>Variable</th><th>Resolves to</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td class="n">--primary</td><td class="n">--text (ink / paper)</td><td class="d">A button is chrome, not something <em>about</em> interface. Amber also sits 16&deg; from the warning hue, so an amber primary quietly reads as caution.</td></tr>
+          <tr><td class="n">--destructive</td><td class="n">--mk-700</td><td class="d">The reserved alarm mark. Same value in both exposures.</td></tr>
+          <tr><td class="n">--ring</td><td class="n">--mk-590</td><td class="d">Focus keeps the amber &mdash; a signal, not chrome.</td></tr>
+          <tr><td class="n">--border / --input</td><td class="n">--rule</td><td class="d">Hairlines carry all structure. Shadows are switched off globally.</td></tr>
+          <tr><td class="n">--chart-1 &hellip; --chart-8</td><td class="n">4 named hues &times; 2 depths</td><td class="d">Not eight hues. The unnamed hues sit between the named bands and collide with them &mdash; worst pair &Delta;E 0.078. Four hues at two lightnesses roughly doubles that.</td></tr>
+          <tr><td class="n">--radius</td><td class="n">4px</td><td class="d">Down from shadcn's 8px.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">06 / Density</p><h2>The test that was outstanding</h2></div>
+    <p class="sintro">Editorial marks sit at 2.2:1 against paper &mdash; chosen for chroma. That was proven on isolated fills and left explicitly untested at real table density, where several hues sit adjacent and the 6px chip dots have to hold up against each other rather than against whitespace. So here it is: fourteen rows, all six categorical hues, three status states, in both exposures.</p>
+    <div class="plates">
+      <figure class="plate"><figcaption><b>Editorial</b> <span>2.2:1 marks, dot-ring on</span></figcaption>
+        <div class="spec" data-exposure="editorial" style="padding:14px"><div class="wl-card"><table class="wl-table"><thead><tr><th></th><th>Service</th><th>Band</th><th class="num">p99</th><th class="num">Err %</th></tr></thead><tbody><tr><td><span class="wl-status" data-state="ok"></span></td><td>Edge / Next.js</td><td><span class="wl-chip" data-band="interface">590</span></td><td class="num">42</td><td class="num">0.01</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Edge / static assets</td><td><span class="wl-chip" data-band="interface">590</span></td><td class="num">11</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>API / Node</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">88</td><td class="num">0.04</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>API / GraphQL gateway</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">96</td><td class="num">0.03</td></tr><tr><td><span class="wl-status" data-state="watch"></span></td><td>PostgreSQL primary</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">211</td><td class="num">0.12</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>PostgreSQL replica</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">74</td><td class="num">0.01</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Redis cache</td><td><span class="wl-chip" data-band="cyan">490</span></td><td class="num">3</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Object store</td><td><span class="wl-chip" data-band="cyan">490</span></td><td class="num">28</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Azure Container Apps</td><td><span class="wl-chip" data-band="compute">470</span></td><td class="num">17</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Azure Front Door</td><td><span class="wl-chip" data-band="compute">470</span></td><td class="num">9</td><td class="num">0.02</td></tr><tr><td><span class="wl-status" data-state="watch"></span></td><td>Build runners</td><td><span class="wl-chip" data-band="compute">470</span></td><td class="num">1420</td><td class="num">0.31</td></tr><tr><td><span class="wl-status" data-state="critical"></span></td><td>Embedding worker</td><td><span class="wl-chip" data-band="intelligence">405</span></td><td class="num">—</td><td class="num">7.80</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Reranker</td><td><span class="wl-chip" data-band="intelligence">405</span></td><td class="num">134</td><td class="num">0.09</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Eval harness</td><td><span class="wl-chip" data-band="magenta">370</span></td><td class="num">512</td><td class="num">0.00</td></tr></tbody></table></div></div></figure>
+      <figure class="plate"><figcaption><b>Luminous</b> <span>4.5&ndash;9:1 marks, emission on</span></figcaption>
+        <div class="spec" data-exposure="luminous" style="padding:14px"><div class="wl-card"><table class="wl-table"><thead><tr><th></th><th>Service</th><th>Band</th><th class="num">p99</th><th class="num">Err %</th></tr></thead><tbody><tr><td><span class="wl-status" data-state="ok"></span></td><td>Edge / Next.js</td><td><span class="wl-chip" data-band="interface">590</span></td><td class="num">42</td><td class="num">0.01</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Edge / static assets</td><td><span class="wl-chip" data-band="interface">590</span></td><td class="num">11</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>API / Node</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">88</td><td class="num">0.04</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>API / GraphQL gateway</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">96</td><td class="num">0.03</td></tr><tr><td><span class="wl-status" data-state="watch"></span></td><td>PostgreSQL primary</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">211</td><td class="num">0.12</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>PostgreSQL replica</td><td><span class="wl-chip" data-band="systems">520</span></td><td class="num">74</td><td class="num">0.01</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Redis cache</td><td><span class="wl-chip" data-band="cyan">490</span></td><td class="num">3</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Object store</td><td><span class="wl-chip" data-band="cyan">490</span></td><td class="num">28</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Azure Container Apps</td><td><span class="wl-chip" data-band="compute">470</span></td><td class="num">17</td><td class="num">0.00</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Azure Front Door</td><td><span class="wl-chip" data-band="compute">470</span></td><td class="num">9</td><td class="num">0.02</td></tr><tr><td><span class="wl-status" data-state="watch"></span></td><td>Build runners</td><td><span class="wl-chip" data-band="compute">470</span></td><td class="num">1420</td><td class="num">0.31</td></tr><tr><td><span class="wl-status" data-state="critical"></span></td><td>Embedding worker</td><td><span class="wl-chip" data-band="intelligence">405</span></td><td class="num">—</td><td class="num">7.80</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Reranker</td><td><span class="wl-chip" data-band="intelligence">405</span></td><td class="num">134</td><td class="num">0.09</td></tr><tr><td><span class="wl-status" data-state="ok"></span></td><td>Eval harness</td><td><span class="wl-chip" data-band="magenta">370</span></td><td class="num">512</td><td class="num">0.00</td></tr></tbody></table></div></div></figure>
+    </div>
+    <p class="note"><strong>It holds, with one caveat.</strong> The dots stay separable at 6px because the <code>--dot-ring</code> hairline gives each one an edge against the row fill, which is what the 2.2:1 floor cost them. The status column and the band column never compete because one is form and the other is hue. The caveat is <em>rows</em>: at fourteen rows the hairline row separators start doing more work than the hover state, so a table longer than about twenty rows wants zebra striping on <code>--surface</code> rather than more rules.</p>
+  </section>
+
+  <hr class="b">
+
+  <section>
+    <div class="shead"><p class="lab">07 / Resolved</p><h2>The open list, closed</h2></div>
+    <div class="layers">
+      <div class="layer"><span class="tag">Focus ring</span><div><b>No band colour touches chrome anywhere now</b><p>The amber focus ring was the last live exception to rule 1, and it was rationalised rather than justified &mdash; worse, an amber ring sat beside amber interface chips, so &ldquo;focused&rdquo; and &ldquo;classified as interface&rdquo; competed for one signal. Focus is now <code>--text</code>: 16.3:1 on its own ground versus the amber's 8.8. The 2px offset gap shows <code>--ground</code>, which is what makes a neutral ring read as a detached halo instead of a thicker border &mdash; and that, in hindsight, is the whole reason a colour felt necessary.</p></div></div>
+      <div class="layer"><span class="tag">Warm end</span><div><b>Interface vs warning now clears the bar</b><p>Third pass. 71.3&deg;/55&deg; gave &Delta;E 0.054; 78&deg;/45&deg; gave 0.106; <strong>88&deg;/42&deg; gives 0.143 on paper and 0.155 on ink</strong>, above the 0.131 the categorical series holds. Bought by letting warning/critical fall to 0.106 &mdash; a deliberate trade, since those two <em>are</em> a severity ramp and are separated by form as well (ring vs filled), while interface must never be confusable with an alarm. Interface at 88&deg; shares a hue family with the warm neutral at 85&deg;, which is a feature: at 0.004&ndash;0.012 chroma the greys read as faintly interface-tinted rather than as a foreign cast.</p></div></div>
+      <div class="layer"><span class="tag">Lightness</span><div><b>Editorial violet evened up</b><p>It sat at L 0.540 while the rest of the paper set ran 0.645&ndash;0.705, reading a full step heavier. Now L 0.600: costs 15% chroma, closes 60% of the gap. The paper set spans 0.600&ndash;0.705. Some unevenness is irreducible &mdash; violet's chroma peak is simply lower in sRGB &mdash; but it is no longer the outlier.</p></div></div>
+      <div class="layer"><span class="tag">Density</span><div><b>Tested, section 06</b><p>Holds at fourteen rows with all six hues adjacent. One finding: past ~20 rows, prefer zebra striping over more hairlines.</p></div></div>
+      <div class="layer"><span class="tag">Naming</span><div><b>Still yours to make</b><p>Token prefixes are <code>--mk-</code> / <code>--tx-</code> / <code>--dp-</code> / <code>--n-</code>, none of which encode a system name. Renaming is a find-and-replace confined to one file.</p></div></div>
+          <div class="layer"><span class="tag">Indexing</span><div><b>Neutral steps are ordinal now, not 000&ndash;900</b><p>The nm space already owns three-digit numbers, so <code>--n-500</code> beside <code>--mark-590</code> read as the same kind of index when one is lightness and one is hue. Neutrals run <code>01</code>&ndash;<code>12</code>. Trivial-looking, but it is the sort of ambiguity that becomes permanent the moment a registry ships and other people start reading the tokens.</p></div></div>
+    </div></section>
+
+  <hr class="b">
+
+  <footer>
+    <p>Tokens in <code>wavelength.css</code>, component layer in <code>components.css</code>, written system in <code>TWO-EXPOSURE-SYSTEM.md</code>. Every contrast figure and gamut ceiling here is computed, not estimated.</p>
+    <p style="margin-top:14px">This page substitutes system faces for Inter and JetBrains Mono &mdash; the artifact sandbox blocks external font loading. The type scale and the mono-as-metadata rule are accurate; the letterforms are not.</p>
+  </footer>
+
+</div>
