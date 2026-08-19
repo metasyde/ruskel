@@ -14,9 +14,6 @@
     ".": "./src/components.css",
     "./components.css": "./src/components.css"
   },
-  "peerDependencies": {
-    "@ruskel/tokens": "^0.1.0"
-  },
   "publishConfig": {
     "access": "public"
   },
@@ -35,5 +32,8 @@
     "url": "https://github.com/metasyde/ruskel/issues"
   },
   "homepage": "https://github.com/metasyde/ruskel/tree/main/packages/ui#readme",
-  "author": "Enric Trillo (Metasyde)"
+  "author": "Enric Trillo (Metasyde)",
+  "dependencies": {
+    "@ruskel/tokens": "^0.1.0"
+  }
 }

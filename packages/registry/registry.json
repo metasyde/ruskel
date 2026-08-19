@@ -7,35 +7,27 @@
       "name": "ruskel-tokens",
       "type": "registry:style",
       "title": "Ruskel tokens",
-      "description": "The two-exposure token layer. Installs the base style and maps the system onto the shadcn contract.",
-      "files": [
-        {
-          "path": "packages/tokens/src/tokens.css",
-          "target": "styles/ruskel-tokens.css",
-          "type": "registry:file"
-        }
+      "author": "Enric Trillo (Metasyde)",
+      "description": "The two-exposure token layer. Installs @ruskel/tokens and imports it, which also maps the system onto the shadcn variable contract.",
+      "dependencies": [
+        "@ruskel/tokens"
       ],
-      "cssVars": {
-        "theme": {
-          "radius": "4px"
-        }
+      "css": {
+        "@import \"@ruskel/tokens\"": {}
       }
     },
     {
-      "name": "ruskel-components",
+      "name": "ruskel",
       "type": "registry:style",
-      "title": "Ruskel component layer",
-      "description": "Moulds shadcn primitives to the house style: 4px radius, no shadows, tighter density, mono tabular numerals, neutral focus.",
-      "registryDependencies": [
-        "ruskel-tokens"
+      "title": "Ruskel",
+      "author": "Enric Trillo (Metasyde)",
+      "description": "The whole system: tokens plus the component layer. 4px radius, no shadows, tighter density, mono tabular numerals, neutral focus. @ruskel/ui imports the tokens itself.",
+      "dependencies": [
+        "@ruskel/ui"
       ],
-      "files": [
-        {
-          "path": "packages/ui/src/components.css",
-          "target": "styles/ruskel-components.css",
-          "type": "registry:file"
-        }
-      ]
+      "css": {
+        "@import \"@ruskel/ui\"": {}
+      }
     }
   ]
 }

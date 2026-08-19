@@ -9,7 +9,8 @@
   "scripts": {
     "docs": "npx serve docs",
     "solve": "python3 tools/solve.py",
-    "check": "python3 tools/solve.py verify"
+    "check": "python3 tools/solve.py verify",
+    "registry:build": "shadcn build packages/registry/registry.json --output packages/registry/dist"
   },
   "repository": {
     "type": "git",

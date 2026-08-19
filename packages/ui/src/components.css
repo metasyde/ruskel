@@ -1,7 +1,8 @@
 /*
   ══════════════════════════════════════════════════════════════════════════
-  COMPONENT LAYER — moulding shadcn into the house style.  v5
-  Depends on wavelength.css for every value. Contains no raw colours.
+  RUSKEL — component layer. Moulding shadcn into the house style.
+  Contains no raw colours; every value comes from the token layer, which
+  this file pulls in so that importing @ruskel/ui alone is sufficient.
   ══════════════════════════════════════════════════════════════════════════
 
   shadcn is copy-in source, so this is not a theme file you fight — these
@@ -35,6 +36,8 @@
   knob along a track, and a square switch reads as two checkboxes. It is
   the only fully-rounded element in the system besides status dots.
 */
+
+@import "@ruskel/tokens";
 
 /* ══════════════════════════════════════════════════════════════════════
    FOUNDATIONS
