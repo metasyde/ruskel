@@ -4,13 +4,36 @@
   "description": "The component layer: shadcn primitives moulded to the two-exposure system.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": ["*.css"],
-  "files": ["src"],
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "src"
+  ],
   "exports": {
     ".": "./src/components.css",
     "./components.css": "./src/components.css"
   },
-  "peerDependencies": { "@ruskel/tokens": "^0.1.0" },
-  "publishConfig": { "access": "public" },
-  "keywords": ["shadcn", "ui", "css", "design-system"]
+  "peerDependencies": {
+    "@ruskel/tokens": "^0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "shadcn",
+    "ui",
+    "css",
+    "design-system"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metasyde/ruskel.git",
+    "directory": "packages/ui"
+  },
+  "bugs": {
+    "url": "https://github.com/metasyde/ruskel/issues"
+  },
+  "homepage": "https://github.com/metasyde/ruskel/tree/main/packages/ui#readme",
+  "author": "Enric Trillo (Metasyde)"
 }

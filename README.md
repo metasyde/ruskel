@@ -106,6 +106,12 @@ One sans, one mono. Inter at two optical sizes; JetBrains Mono for metadata
 and code. No serif at any size. Mono is the highest-risk element in the
 system — keeping it strictly to metadata is what stops it becoming a costume.
 
+## Ownership
+
+Maintained by [Metasyde](https://github.com/metasyde), Enric Trillo's
+limited company. MIT licensed — free to use in client work, including work
+Metasyde does not deliver.
+
 ## Status
 
 Design ratified, tokens and component layer complete and verified. Not yet

@@ -4,6 +4,20 @@
   "description": "shadcn custom registry manifest for Ruskel.",
   "license": "MIT",
   "type": "module",
-  "files": ["registry.json"],
-  "publishConfig": { "access": "public" }
+  "files": [
+    "registry.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metasyde/ruskel.git",
+    "directory": "packages/registry"
+  },
+  "bugs": {
+    "url": "https://github.com/metasyde/ruskel/issues"
+  },
+  "homepage": "https://github.com/metasyde/ruskel/tree/main/packages/registry#readme",
+  "author": "Enric Trillo (Metasyde)"
 }

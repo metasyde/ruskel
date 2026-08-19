@@ -4,12 +4,34 @@
   "description": "Two-exposure design tokens. Ink on paper, paper on ink.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": ["*.css"],
-  "files": ["src"],
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "src"
+  ],
   "exports": {
     ".": "./src/tokens.css",
     "./tokens.css": "./src/tokens.css"
   },
-  "publishConfig": { "access": "public" },
-  "keywords": ["design-tokens", "css", "oklch", "shadcn", "design-system"]
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "design-tokens",
+    "css",
+    "oklch",
+    "shadcn",
+    "design-system"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metasyde/ruskel.git",
+    "directory": "packages/tokens"
+  },
+  "bugs": {
+    "url": "https://github.com/metasyde/ruskel/issues"
+  },
+  "homepage": "https://github.com/metasyde/ruskel/tree/main/packages/tokens#readme",
+  "author": "Enric Trillo (Metasyde)"
 }
