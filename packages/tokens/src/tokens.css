@@ -152,8 +152,6 @@
   --rsk-ground: var(--rsk-n-12);
   --rsk-surface: oklch(0.960 0.008 var(--rsk-h-neutral));
   --rsk-surface-2: oklch(0.982 0.005 var(--rsk-h-neutral));
-  --rsk-rule: oklch(0.855 0.010 var(--rsk-h-neutral));
-  --rsk-rule-strong: oklch(0.760 0.011 var(--rsk-h-neutral));
   --rsk-text: var(--rsk-n-01);                                /* 16.3:1 */
   --rsk-text-prose: var(--rsk-n-03);
   --rsk-text-muted: oklch(0.470 0.011 var(--rsk-h-neutral));   /*  5.4:1 */
@@ -224,8 +222,6 @@
   --rsk-ground: var(--rsk-n-01);
   --rsk-surface: var(--rsk-n-02);
   --rsk-surface-2: var(--rsk-n-03);
-  --rsk-rule: var(--rsk-n-04);
-  --rsk-rule-strong: var(--rsk-n-05);
   --rsk-text: var(--rsk-n-12);          /* 16.3:1 */
   --rsk-text-prose: var(--rsk-n-11);
   --rsk-text-muted: var(--rsk-n-08);    /*  5.8:1 */
@@ -286,6 +282,37 @@
 [data-band="intelligence"] { --rsk-mark: var(--rsk-mark-405); --rsk-tint: var(--rsk-text-405); }
 [data-band="warning"]      { --rsk-mark: var(--rsk-mark-620); --rsk-tint: var(--rsk-text-620); }
 [data-band="critical"]     { --rsk-mark: var(--rsk-mark-700); --rsk-tint: var(--rsk-text-700); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   RULES — translucent, and deliberately so.
+
+   A solid hairline is the same colour wherever it sits, so a card border
+   over a raised surface looks identical to one over the ground, and the
+   surface reads flatter than it is. Deriving the rule from --rsk-text at
+   low alpha makes it composite with whatever is behind: the same border
+   comes out #262522 on the ground and #302F2B on a surface, which reads
+   as depth rather than as an outline drawn on top.
+
+   One declaration serves both exposures because --rsk-text already flips
+   — paper on ink, ink on paper — so this is white-on-dark and ink-on-light
+   with no per-exposure override, which rule 3 forbids anyway.
+
+   12% and 22% were solved to preserve the weight the solid values had.
+   Per exposure they wanted 14%/11% and 23%/21%; one pair covers both to
+   within a couple of lightness points.
+
+   Two things to know:
+   - Borders that OVERLAP double their alpha. Tables here use
+     border-collapse so edges merge, but stacked elements each carrying
+     their own border will show a seam where they meet.
+   - Over a photo or gradient the rule tracks the content beneath it.
+     That is usually wanted; when it is not, reach for --rsk-n-04.
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-exposure] {
+  --rsk-rule: color-mix(in oklab, var(--rsk-text) 12%, transparent);
+  --rsk-rule-strong: color-mix(in oklab, var(--rsk-text) 22%, transparent);
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    SHADCN CONTRACT
