@@ -112,8 +112,33 @@ Two constraints worth knowing, because they cost the most to satisfy:
 
 ## Typography
 
-One sans, one mono. Inter at two optical sizes; IBM Plex Mono for metadata and code. No serif at any size. Mono is the highest-risk element in the
-system — keeping it strictly to metadata is what stops it becoming a costume.
+Three registers, assigned by **who is speaking**:
+
+| | speaker | used for |
+|---|---|---|
+| **Mono** | the machine | figures, timestamps, states, nm readouts, chips |
+| **Sans** | the system | labels, nav, controls, body copy |
+| **Serif** | a person | article titles, pull quotes |
+
+The test: *if a machine could have written it, it is not serif.*
+
+Inter, IBM Plex Mono, Instrument Serif. Faces are declared, not bundled —
+load them in the app (next/font, Fontsource, a `<link>`) and the stacks pick
+them up.
+
+The serif is gated on **voice**, which is independent of exposure:
+
+```html
+<article data-exposure="luminous" data-voice="author">
+```
+
+A dark-ground site that publishes essays is luminous *and* authored, so
+gating on the ground would silence the serif exactly where a person is
+writing. Product is the default, so it never leaks onto interface surfaces.
+It is display-only too: Instrument Serif loses its footing under about 24px.
+
+Mono remains the highest-risk element — keeping it strictly to metadata is
+what stops it becoming a costume.
 
 ## Ownership
 
