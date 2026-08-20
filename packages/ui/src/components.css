@@ -408,6 +408,120 @@ textarea.rsk-input { height: auto; padding: 8px 10px; min-height: 72px; resize: 
 @keyframes wl-pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.55 } }
 
 /* ══════════════════════════════════════════════════════════════════════
+   INSTRUMENT FURNITURE
+
+   Three primitives that share one mechanic: a 1px hairline, a small radius,
+   and contained content. No shadows, no gradients, no images. They exist so
+   a page can *show* something rather than assert it — which is the gap
+   between a written system and a demonstrated one.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/*
+  A section break with more weight than a rule and less than a heading.
+  Diagonal hatch, 1px every 5px. Derived from --rsk-rule-strong, so it
+  flips with the exposure and needs no per-ground variant.
+
+  The angle is 315deg rather than 45deg so the hatch leans the same way as
+  the dispersion mark's refracted rays.
+*/
+.rsk-hatch {
+  height: 12px;
+  background-image: repeating-linear-gradient(
+    315deg,
+    var(--rsk-rule-strong) 0 1px,
+    transparent 0 50%
+  );
+  background-size: 10px 10px;
+}
+.rsk-hatch--tall { height: 20px; }
+
+/*
+  A framed glyph. Gives icons an enclosure instead of letting them float,
+  which is most of what makes a row of them read as instrument panel rather
+  than as clip art.
+*/
+.rsk-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: var(--rsk-hairline) solid var(--rsk-rule);
+  border-radius: var(--radius);
+  background: var(--rsk-surface);
+  color: var(--rsk-text-muted);
+}
+.rsk-tile--sm { width: 22px; height: 22px; border-radius: var(--radius-sm); }
+/* Carrying a band: the glyph takes the mark, the frame a tint of it. */
+.rsk-tile--band {
+  color: var(--rsk-mark);
+  border-color: color-mix(in oklab, var(--rsk-mark) var(--rsk-band-edge), transparent);
+  background: color-mix(in oklab, var(--rsk-mark) var(--rsk-band-fill), transparent);
+}
+
+/*
+  A demonstration frame. An outer hairline panel divided into cells, with an
+  optional verdict row underneath. Use it to show two states side by side —
+  before/after, without/with, wrong/right — so the reader compares rather
+  than takes your word for it.
+
+  Cells stack on narrow viewports; the divider follows automatically because
+  it is drawn per-cell rather than on the container.
+*/
+.rsk-plate {
+  display: flex;
+  flex-direction: column;
+  border: var(--rsk-hairline) solid var(--rsk-rule);
+  border-radius: var(--radius-lg);
+  background: var(--rsk-surface);
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .rsk-plate { flex-direction: row; }
+  .rsk-plate > .rsk-plate__cell + .rsk-plate__cell {
+    border-top: 0;
+    border-left: var(--rsk-hairline) solid var(--rsk-rule);
+  }
+}
+.rsk-plate__cell {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--rsk-pad-x-lg);
+  gap: var(--rsk-pad-x-sm);
+}
+.rsk-plate__cell + .rsk-plate__cell {
+  border-top: var(--rsk-hairline) solid var(--rsk-rule);
+}
+.rsk-plate__foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rsk-pad-x-sm);
+  margin-top: auto;
+  padding-top: var(--rsk-pad-x-md);
+  border-top: var(--rsk-hairline) solid var(--rsk-rule);
+  font-family: var(--rsk-font-mono);
+  font-size: var(--rsk-text-2xs);
+  letter-spacing: var(--rsk-tracking-label);
+  text-transform: uppercase;
+  color: var(--rsk-text-faint);
+}
+/* The verdict. Form carries it — a ring or a fill — with the one alarm hue
+   for the negative case, exactly as the status dot does. */
+.rsk-plate__verdict { width: 16px; height: 16px; border-radius: 50%; display: inline-grid; place-content: center; flex: none; font-size: 10px; }
+.rsk-plate__verdict[data-verdict="yes"] { background: var(--rsk-mark-520); color: var(--rsk-on-mark); }
+.rsk-plate__verdict[data-verdict="no"]  { background: transparent; box-shadow: inset 0 0 0 1.5px var(--rsk-mark-700); color: var(--rsk-mark-700); }
+.rsk-plate__caption {
+  margin: var(--rsk-pad-x-sm) 0 0;
+  font-size: var(--rsk-text-xs);
+  color: var(--rsk-text-muted);
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
    STATUS — one alarm hue plus form. Never a band.
    ══════════════════════════════════════════════════════════════════════ */
 
