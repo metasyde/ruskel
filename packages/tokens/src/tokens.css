@@ -501,18 +501,27 @@
 [data-exposure] ::selection { background: color-mix(in oklab, var(--rsk-mark-590) 30%, transparent); color: var(--rsk-text); }
 
 [data-exposure] {
-  /* Syntax — code blocks are a first-class surface here, not an afterthought.
-     Mapped onto the ring so highlighting is the same system as everything
-     else: keywords take intelligence, strings systems, numbers interface. */
-  --rsk-code-bg: var(--rsk-surface);
+  /* ── Syntax ────────────────────────────────────────────────────────────
+     Solved against the code block's own ground (--rsk-surface-2), not the
+     page ground, within a 5.0-7.5:1 window. An earlier version reused the
+     TEXT ring, which is tuned for AA on the page and came out flat inside a
+     raised code surface — the block read grey where it should read lit.
+     Reusing the MARK ring instead would have put keywords at 3.86:1, too low
+     for 14px code. Neither ring fits, so this one is its own solve.
+
+     Roles follow the band taxonomy: keywords take intelligence, strings
+     systems, numbers and types interface, functions compute. */
+  --rsk-code-bg: var(--rsk-surface-2);
   --rsk-code-text: var(--rsk-text-prose);
   --rsk-code-comment: var(--rsk-text-faint);
-  --rsk-code-keyword: var(--rsk-text-405);
-  --rsk-code-string: var(--rsk-text-520);
-  --rsk-code-number: var(--rsk-text-590);
-  --rsk-code-function: var(--rsk-text-470);
+  --rsk-code-keyword:  oklch(0.665 0.192 var(--rsk-h-405));  /* #A174FA 5.07 */
+  --rsk-code-string:   oklch(0.730 0.169 var(--rsk-h-520));  /* #25C678 7.47 */
+  --rsk-code-number:   oklch(0.750 0.146 var(--rsk-h-590));  /* #D4A721 7.41 */
+  --rsk-code-function: oklch(0.645 0.185 var(--rsk-h-470));  /* #1A8FF9 5.02 */
+  --rsk-code-type:     oklch(0.735 0.121 var(--rsk-h-490));  /* #25BDD3 7.37 */
+  --rsk-code-special:  oklch(0.680 0.265 var(--rsk-h-370));  /* #DB4AFA 5.05 */
   --rsk-code-punctuation: var(--rsk-text-muted);
-  --rsk-code-added: var(--rsk-text-520);
+  --rsk-code-added: var(--rsk-code-string);
   --rsk-code-removed: var(--rsk-text-700);
 
   /* Scrollbars, so a dense panel does not punch a hole in the exposure. */
