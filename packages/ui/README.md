@@ -67,7 +67,10 @@ reserved alarm hue appears: a filled 520nm dot for yes, a 700nm ring for no.
   the body, so the code gets the brighter surface and the chrome recedes: a lit
   panel with a label on its bezel, rather than a titled box with code inside.
   CSS only — the copy button is styled here and wired by the consumer, because
-  a stylesheet has no business shipping clipboard behaviour.
+  a stylesheet has no business shipping clipboard behaviour. It expects an
+  **inline SVG**, not a glyph or emoji: an emoji renders in the platform's own
+  colour and weight, ignores the exposure, and reads as a foreign object in the
+  panel. Use `currentColor` on a 1.5px stroke and it stays in the system.
 - **`.rsk-density`** — seven rows, column flow, five steps. Named for the shape
   rather than for GitHub, because request volume, publishing cadence and error
   counts are the same picture. The ramp derives from `--rsk-mark`, so the grid

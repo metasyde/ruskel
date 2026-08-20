@@ -583,6 +583,17 @@ textarea.rsk-input { height: auto; padding: 8px 10px; min-height: 72px; resize: 
               color var(--duration) var(--ease);
 }
 .rsk-codeframe__copy:hover { background: var(--rsk-surface-2); color: var(--rsk-text); }
+/* Expects an inline SVG, not a glyph or an emoji. An emoji renders in the
+   platform's own colour and weight, so it ignores the exposure entirely and
+   reads as a foreign object dropped into the panel. currentColor on a 1.5px
+   stroke keeps the control in the system. */
+.rsk-codeframe__copy svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+}
 /* Confirmation is form plus the one non-alarm mark the system allows for
    "this worked" — the same 520nm the plate verdict uses. */
 .rsk-codeframe__copy[data-copied="true"] { color: var(--rsk-mark-520); }
