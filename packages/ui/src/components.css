@@ -522,6 +522,139 @@ textarea.rsk-input { height: auto; padding: 8px 10px; min-height: 72px; resize: 
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+   CODE FRAME
+
+   A code block is a first-class surface here, not an escape hatch in the
+   middle of prose — so it gets a frame with a header naming what it is and
+   room for a copy control.
+
+   The header sits one step *darker* than the body — --rsk-surface under
+   --rsk-code-bg, which is --rsk-surface-2. That inverts the usual card
+   treatment on purpose: the payload is the code, so the code gets the
+   brighter surface and the chrome recedes behind it. A lighter header
+   would make the frame read as a titled box with code inside, rather than
+   as a lit panel with a label on its bezel.
+
+   CSS only. The copy button is styled here and wired by the consumer —
+   a stylesheet has no business shipping clipboard behaviour.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.rsk-codeframe {
+  border: var(--rsk-hairline) solid var(--rsk-rule);
+  border-radius: var(--radius);
+  background: var(--rsk-code-bg);
+  overflow: hidden;
+  margin: var(--rsk-text-2xl) 0;
+}
+.rsk-codeframe__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rsk-pad-x-sm);
+  padding: 6px 6px 6px var(--rsk-pad-x-md);
+  background: var(--rsk-surface);
+  border-bottom: var(--rsk-hairline) solid var(--rsk-rule);
+}
+/* The filename or language. Mono, because it is metadata about the payload
+   rather than part of it. */
+.rsk-codeframe__name {
+  font-family: var(--rsk-font-mono);
+  font-size: var(--rsk-text-2xs);
+  letter-spacing: var(--rsk-tracking-label);
+  text-transform: uppercase;
+  color: var(--rsk-text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rsk-codeframe__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rsk-control-sm);
+  height: var(--rsk-control-sm);
+  flex: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--rsk-text-faint);
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+              color var(--duration) var(--ease);
+}
+.rsk-codeframe__copy:hover { background: var(--rsk-surface-2); color: var(--rsk-text); }
+/* Confirmation is form plus the one non-alarm mark the system allows for
+   "this worked" — the same 520nm the plate verdict uses. */
+.rsk-codeframe__copy[data-copied="true"] { color: var(--rsk-mark-520); }
+.rsk-codeframe > pre,
+.rsk-codeframe__body {
+  margin: 0;
+  padding: var(--rsk-pad-x-md);
+  overflow-x: auto;
+  font-family: var(--rsk-font-mono);
+  font-size: var(--rsk-text-sm);
+  line-height: 1.6;
+  background: transparent;
+  color: var(--rsk-code-text);
+}
+.rsk-codeframe [data-highlighted-line] {
+  background: var(--code-highlight);
+  display: inline-block;
+  width: 100%;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   DENSITY GRID
+
+   Seven rows, column flow, five steps. A contribution graph is one use of
+   this; request volume, publishing cadence and error counts are others, so
+   it is named for the shape rather than for GitHub.
+
+   The ramp is built from --rsk-mark, so the grid inherits whichever band
+   the subject belongs to: a systems-green grid for database activity, a
+   compute-blue one for build runs. That keeps it inside the taxonomy
+   rather than being a green thing that means nothing.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.rsk-density {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, auto);
+  gap: 2px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.rsk-density i {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-sm);
+  background: var(--rsk-surface-2);
+  display: block;
+}
+/* Four filled steps over the empty ground. Mixed against --rsk-surface
+   rather than given alpha, so the cells stay opaque and do not pick up
+   whatever sits behind the grid. */
+.rsk-density i[data-level="1"] { background: color-mix(in oklab, var(--rsk-mark) 28%, var(--rsk-surface-2)); }
+.rsk-density i[data-level="2"] { background: color-mix(in oklab, var(--rsk-mark) 52%, var(--rsk-surface-2)); }
+.rsk-density i[data-level="3"] { background: color-mix(in oklab, var(--rsk-mark) 76%, var(--rsk-surface-2)); }
+.rsk-density i[data-level="4"] { background: var(--rsk-mark); }
+
+.rsk-density-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--rsk-font-mono);
+  font-size: var(--rsk-text-2xs);
+  letter-spacing: var(--rsk-tracking-label);
+  text-transform: uppercase;
+  color: var(--rsk-text-faint);
+}
+.rsk-density-legend i {
+  width: 9px; height: 9px; border-radius: var(--radius-sm); display: block;
+  background: var(--rsk-surface-2);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
    STATUS — one alarm hue plus form. Never a band.
    ══════════════════════════════════════════════════════════════════════ */
 
