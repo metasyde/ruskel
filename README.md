@@ -140,6 +140,22 @@ It is display-only too: Instrument Serif loses its footing under about 24px.
 Mono remains the highest-risk element — keeping it strictly to metadata is
 what stops it becoming a costume.
 
+## Releasing
+
+**Bump the version in the PR that ships the change** — never in an earlier
+PR of a stack. `@ruskel/ui@0.5.0` was published from a stacked base that had
+already taken the number, so the primitives merged afterwards had nowhere to
+go and shipped as 0.6.0 instead. The two packages version independently for
+the same reason: tokens and ui do not always change together, and forcing
+lockstep means publishing empty versions to keep the numbers aligned.
+
+Before publishing, check that what is on npm matches `main`:
+
+```bash
+npm pack @ruskel/ui@latest && tar -xzf ruskel-ui-*.tgz
+shasum -a 256 package/src/components.css packages/ui/src/components.css
+```
+
 ## Ownership
 
 Maintained by [Metasyde](https://github.com/metasyde), Enric Trillo's
