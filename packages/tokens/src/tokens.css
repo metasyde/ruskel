@@ -51,6 +51,9 @@
 
   Success is NOT a colour. Health is form: hollow = fine, ring = watch,
   filled = critical.
+
+  Radius encodes role: containers are near-square (4px), tokens are pills.
+  The test is whether the element holds something or IS something.
 */
 
 :root {
@@ -110,9 +113,33 @@
   --rsk-measure: 68ch;
 
   /* ── Geometry ──────────────────────────────────────────────────────── */
-  --radius: 4px;                    /* shadcn ships 8px — see components.css */
-  --radius-sm: 2px;
-  --radius-lg: 6px;
+  /* ── Radius encodes ROLE, not brand ──────────────────────────────────
+     An earlier reading of rule 7 — "near-square, no pills" — was too blunt.
+     It produced a system where a filter chip and a dialog carried the same
+     corner, which is not what either wants.
+
+     The distinction that actually holds:
+
+       STRUCTURE  cards, dialogs, inputs, buttons, frames, code blocks.
+                  Things that hold other things. Near-square, 4px. A soft
+                  corner on a container reads as decoration; a hard one
+                  reads as construction.
+
+       TOKENS     chips, tags, status dots, switches, filter pills.
+                  Small, inline, self-contained things that ARE the content
+                  rather than holding it. Fully rounded. A token is a
+                  discrete object you could pick up, and rounding says so.
+
+     The test: does it contain something, or is it a thing? Containers get
+     4px, objects get the pill.
+
+     This is why mixing them is not "two schools of design" — it is one
+     rule with two outcomes, and it is legible precisely because the shape
+     tells you which kind of element you are looking at. */
+  --radius: 4px;                    /* structure — shadcn ships 8px */
+  --radius-sm: 2px;                 /* structure, small: checkboxes, cells */
+  --radius-lg: 6px;                 /* structure, large: dialogs, plates */
+  --radius-pill: 999px;             /* tokens: chips, tags, status, switches */
   --rsk-hairline: 1px;
 
   /* ── Density ───────────────────────────────────────────────────────────

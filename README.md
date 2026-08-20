@@ -78,8 +78,12 @@ component source is edited.
 4. **Marks are seen; text is read.** Never swap the two rings.
 5. **Mono is metadata, never content.** Labels, figures, timestamps, code.
 6. **Numbering must encode order.** Unordered peers get a rule and a label.
-7. **Geometry is near-square.** Radii 2/4/6px. No pills except switches and
-   status dots.
+7. **Radius encodes role.** *Structure* — cards, dialogs, inputs, buttons,
+   frames — is near-square at 2/4/6px. *Tokens* — chips, tags, status dots,
+   switches — are pills. The test: does it hold something, or is it a thing?
+   Containers get the hard corner, objects get the round one. Mixing them is
+   not two schools of design; it is one rule with two outcomes, and the shape
+   tells you which kind of element you are looking at.
 8. **Spend boldness once per view.** One luminous moment per screen.
 9. **Colour is never the only carrier.** The system must survive greyscale.
 

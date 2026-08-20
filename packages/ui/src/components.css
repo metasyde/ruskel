@@ -267,8 +267,9 @@ textarea.rsk-input { height: auto; padding: 8px 10px; min-height: 72px; resize: 
 
 .rsk-chip {
   display: inline-flex; align-items: center; gap: 6px;
-  height: 20px; padding: 0 7px;
-  border-radius: var(--radius-sm);
+  height: 20px; padding: 0 9px;
+  /* A chip is a token, not a container — see the radius note in tokens.css. */
+  border-radius: var(--radius-pill);
   border: var(--rsk-hairline) solid var(--rsk-rule);
   background: var(--rsk-surface);
   color: var(--rsk-text);
@@ -285,6 +286,7 @@ textarea.rsk-input { height: auto; padding: 8px 10px; min-height: 72px; resize: 
   background: var(--rsk-mark); box-shadow: var(--rsk-glow-sm), var(--rsk-dot-ring); flex: none;
 }
 .rsk-chip--solid {
+  border-radius: var(--radius-pill);
   background: var(--rsk-mark); color: var(--rsk-on-mark);
   border-color: transparent; box-shadow: var(--rsk-glow-sm); font-weight: 500;
 }
