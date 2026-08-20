@@ -477,11 +477,13 @@
      the mapping a component reading --surface or --code got nothing. */
   --surface: var(--rsk-surface);
   --surface-foreground: var(--rsk-text);
-  --selection: color-mix(in oklab, var(--rsk-mark-590) 30%, transparent);
+  --selection: color-mix(in oklab, var(--rsk-text) 24%, transparent);
   --selection-foreground: var(--rsk-text);
   --code: var(--rsk-code-bg);
   --code-foreground: var(--rsk-code-text);
-  --code-highlight: color-mix(in oklab, var(--rsk-mark-590) 12%, transparent);
+  /* Neutral for the same reason as selection: a highlighted line is
+     emphasis, not a classification. */
+  --code-highlight: color-mix(in oklab, var(--rsk-text) 10%, transparent);
   --code-number: var(--rsk-code-number);
 
   --sidebar: var(--rsk-surface);
@@ -498,7 +500,14 @@
    ODDS AND ENDS a registry needs and a token file usually forgets
    ══════════════════════════════════════════════════════════════════════ */
 
-[data-exposure] ::selection { background: color-mix(in oklab, var(--rsk-mark-590) 30%, transparent); color: var(--rsk-text); }
+/*
+   Selection is neutral, not amber. It was the last band colour left in
+   chrome — and it sat next to amber interface chips, so "selected" and
+   "classified as interface" competed for the same signal. The same argument
+   that moved the focus ring off 590nm applies here: a selection is the
+   browser reporting state, not a classification.
+*/
+[data-exposure] ::selection { background: color-mix(in oklab, var(--rsk-text) 24%, transparent); color: var(--rsk-text); }
 
 [data-exposure] {
   /* ── Syntax ────────────────────────────────────────────────────────────
