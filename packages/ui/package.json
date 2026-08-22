@@ -26,14 +26,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/metasyde/ruskel.git",
+    "url": "git+https://github.com/phugadev/ruskel.git",
     "directory": "packages/ui"
   },
   "bugs": {
-    "url": "https://github.com/metasyde/ruskel/issues"
+    "url": "https://github.com/phugadev/ruskel/issues"
   },
-  "homepage": "https://github.com/metasyde/ruskel/tree/main/packages/ui#readme",
-  "author": "Enric Trillo (Metasyde)",
+  "homepage": "https://github.com/phugadev/ruskel/tree/main/packages/ui#readme",
+  "author": "Enric Trillo",
   "dependencies": {
     "@ruskel/tokens": "^0.7.0"
   }

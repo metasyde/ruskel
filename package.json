@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "A two-exposure design system: one spectrum, rendered as pigment or as light.",
   "license": "MIT",
-  "author": "Enric Trillo (Metasyde)",
+  "author": "Enric Trillo",
   "type": "module",
   "scripts": {
     "docs": "npx serve docs",
@@ -13,6 +13,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/metasyde/ruskel.git"
+    "url": "git+https://github.com/phugadev/ruskel.git"
   }
 }
