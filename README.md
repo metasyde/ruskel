@@ -42,8 +42,8 @@ Via the shadcn CLI — the repo *is* the registry, so there is nothing hosted
 and no build step:
 
 ```bash
-npx shadcn@latest add metasyde/ruskel/ruskel          # tokens + components
-npx shadcn@latest add metasyde/ruskel/ruskel-tokens   # tokens only
+npx shadcn@latest add phugadev/ruskel/ruskel          # tokens + components
+npx shadcn@latest add phugadev/ruskel/ruskel-tokens   # tokens only
 ```
 
 Or plainly, if you are not using shadcn:
@@ -162,9 +162,10 @@ shasum -a 256 package/src/components.css packages/ui/src/components.css
 
 ## Ownership
 
-Maintained by [Metasyde](https://github.com/metasyde), Enric Trillo's
-limited company. MIT licensed — free to use in client work, including work
-Metasyde does not deliver.
+Built and maintained by [Enric Trillo](https://github.com/phugadev). It is
+a personal design system: the decisions in it are mine, and it moves when I
+change my mind about one of them. MIT licensed — free to use in client work,
+including work I have nothing to do with.
 
 ## Status
 
